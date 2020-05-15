@@ -10,15 +10,15 @@
 class PlayerEntity : public Entity
 {
     public:
-        int GetLifePoints();
-        int SetLifePoints();
-        int GetOxygenLevel();
-        int SetOxygenLevel();
+        int getLifePoints();
+        int setLifePoints();
+        int getOxygenLevel();
+        int setOxygenLevel();
 
         PlayerEntity();
         ~PlayerEntity();
 
     private:
-        int LifePoints;
-        int OxygenLevel;
+        int lifePoints;
+        int oxygenLevel;
 };

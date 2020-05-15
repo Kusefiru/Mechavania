@@ -14,21 +14,21 @@
 class Entity 
 {
     public:
-        PhysicsBody GetPhysicsBody();
+        PhysicsBody getPhysicsBody();
 
-        bool GetIsPassable();
-        SetIsPassable(bool NewIsPassable);
+        bool getIsPassable();
+        setIsPassable(bool newIsPassable);
 
-        SetTexture(std::string NewTextureName);
+        setTexture(std::string newTextureName);
 
-        Entity(Vector2 Pos, int Width, int Height, int Density, std::string TextureName);
+        Entity(Vector2 pos, int width, int height, int density, std::string textureName);
         ~Entity();
 
     private:
-        PhysicsBody Body;
-        bool IsPassable;
-        std::string TextureName;
-        Texture2D Texture;
+        PhysicsBody body;
+        bool isPassable;
+        std::string textureName;
+        Texture2D texture;
 };
 
 #endif

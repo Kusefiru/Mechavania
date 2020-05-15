@@ -7,32 +7,32 @@
 
 #include "Entity.hpp"
 
-PhysicsBody Entity::GetPhysicsBody(){
-    return this->Body;
+PhysicsBody Entity::getPhysicsBody(){
+    return this->body;
 }
 
-bool Entity::GetIsPassable(){
-    return this->IsPassable;
+bool Entity::getIsPassable(){
+    return this->isPassable;
 }
 
-Entity::SetIsPassable(bool NewIsPassable){
-    this->IsPassable = NewIsPassable;
+Entity::setIsPassable(bool newIsPassable){
+    this->isPassable = newIsPassable;
 }
 
-Entity::SetTexture(std::string NewTextureName){
-    this->TextureName = NewTextureName;
+Entity::setTexture(std::string newTextureName){
+    this->textureName = newTextureName;
     // Update Texture
 }
 
-Entity::Entity(Vector2 Pos, int Width, int Height, int Density, std::string TextureName){
+Entity::Entity(Vector2 pos, int width, int height, int density, std::string textureName){
     // Create the PhysicsBody associated with the Entity
-    this->Body = CreatePhysicsBodyRectangle(Pos, Width, Height, Density);
+    this->body = CreatePhysicsBodyRectangle(pos, width, height, density);
     // Set the Texture Name
-    this->TextureName = TextureName;
+    this->textureName = textureName;
     // Create the Texture
 }
 
 Entity::~Entity(){
     // Destroys this PhysicsBody
-    DestroyPhysicsBody(this->Body);
+    DestroyPhysicsBody(this->body);
 }

@@ -5,6 +5,7 @@
 *
 ********************************************************************************************/
 #include "Libs.hpp"
+#include "Mcamera.hpp"
 
 #define VELOCITY    0.5f
 
@@ -34,11 +35,9 @@ int main()
     PhysicsBody body = CreatePhysicsBodyRectangle((Vector2){ screenWidth/2, screenHeight/2 }, 50, 50, 1);
     body->freezeOrient = true;      // Constrain body rotation to avoid little collision torque amounts
 
-    Camera2D camera = {0};
-    camera.target = (Vector2){body->position.x + 25, body->position.y + 25};
-    camera.offset = (Vector2){ screenWidth/2, screenHeight/2 };
-    camera.rotation = 0.0f;
-    camera.zoom = 1.0f;
+    Mcamera mainCamera;
+    mainCamera.setFollowedPhysicsBody(&body);
+    //mainCamera.getCamera().target = (Vector2){body->position.x, body->position.y};
 
     SetTargetFPS(60);               // Set our game to run at 60 frames-per-second
     //--------------------------------------------------------------------------------------
@@ -64,7 +63,9 @@ int main()
         if (IsKeyDown(KEY_RIGHT)) body->velocity.x = VELOCITY;
         else if (IsKeyDown(KEY_LEFT)) body->velocity.x = -VELOCITY;
 
-        camera.target = (Vector2){ body->position.x + 25, camera.target.y };
+        //mainCamera.update();
+        //mainCamera.getCamera().target = (Vector2){body->position.x, body->position.y};
+        mainCamera.setFollowedPhysicsBody(&body);
 
         // Vertical movement input checking if player physics body is grounded
         if (IsKeyDown(KEY_UP) && body->isGrounded) body->velocity.y = -VELOCITY*4;
@@ -78,7 +79,7 @@ int main()
 
             DrawFPS(screenWidth - 90, screenHeight - 30);
 
-            BeginMode2D(camera);
+            BeginMode2D(mainCamera.getCamera());
 
             // Draw created physics bodies
             int bodiesCount = GetPhysicsBodiesCount();
