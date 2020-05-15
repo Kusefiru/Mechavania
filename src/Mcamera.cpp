@@ -7,7 +7,7 @@
 
 #include "Mcamera.hpp"
 
-Mcamera::update() {
+void Mcamera::update() {
     //if(this->followedPhysicsBody != nullptr) {
         this->camera.target = (Vector2){(*this->followedPhysicsBody)->position.x, (*this->followedPhysicsBody)->position.y}; // TODO : the camera is not centered on the entity for now
     /*} else {
@@ -15,10 +15,10 @@ Mcamera::update() {
     }*/
 }
 
-Mcamera::setFollowedPhysicsBody(PhysicsBody* body){
+void Mcamera::setFollowedPhysicsBody(PhysicsBody* body){
     this->followedPhysicsBody = body;
-    //this->update();
-    this->camera.target = (Vector2){(*this->followedPhysicsBody)->position.x, (*this->followedPhysicsBody)->position.y};
+    this->update();
+    //this->camera.target = (Vector2){(*this->followedPhysicsBody)->position.x, (*this->followedPhysicsBody)->position.y};
 }
 
 Camera2D& Mcamera::getCamera(){

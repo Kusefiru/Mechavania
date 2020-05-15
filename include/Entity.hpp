@@ -17,9 +17,9 @@ class Entity
         PhysicsBody getPhysicsBody();
 
         bool getIsPassable();
-        setIsPassable(bool newIsPassable);
+        void setIsPassable(bool newIsPassable);
 
-        setTexture(std::string newTextureName);
+        void setTexture(std::string newTextureName);
 
         Entity(Vector2 pos, int width, int height, int density, std::string textureName);
         ~Entity();

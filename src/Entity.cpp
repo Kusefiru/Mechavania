@@ -15,11 +15,11 @@ bool Entity::getIsPassable(){
     return this->isPassable;
 }
 
-Entity::setIsPassable(bool newIsPassable){
+void Entity::setIsPassable(bool newIsPassable){
     this->isPassable = newIsPassable;
 }
 
-Entity::setTexture(std::string newTextureName){
+void Entity::setTexture(std::string newTextureName){
     this->textureName = newTextureName;
     // Update Texture
 }

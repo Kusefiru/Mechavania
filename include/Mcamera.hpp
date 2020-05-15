@@ -13,8 +13,8 @@
 class Mcamera
 {
     public:
-        update();
-        setFollowedPhysicsBody(PhysicsBody* body);
+        void update();
+        void setFollowedPhysicsBody(PhysicsBody* body);
         Camera2D& getCamera();
 
         Mcamera();

@@ -65,7 +65,7 @@ int main()
 
         //mainCamera.update();
         //mainCamera.getCamera().target = (Vector2){body->position.x, body->position.y};
-        mainCamera.setFollowedPhysicsBody(&body);
+        mainCamera.update();
 
         // Vertical movement input checking if player physics body is grounded
         if (IsKeyDown(KEY_UP) && body->isGrounded) body->velocity.y = -VELOCITY*4;
