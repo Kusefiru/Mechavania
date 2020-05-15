@@ -12,6 +12,7 @@ extern "C"{
     #include "raylib.h"
     #define PHYSAC_IMPLEMENTATION
     #define PHYSAC_NO_THREADS
+    #define PHYSAC_STATIC
     #include "physac.h"
 }
 

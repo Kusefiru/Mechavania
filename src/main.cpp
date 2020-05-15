@@ -4,15 +4,7 @@
 *
 *
 ********************************************************************************************/
-
-extern "C"{
-    #include "raylib.h"
-    #define PHYSAC_IMPLEMENTATION
-    #define PHYSAC_NO_THREADS
-    #include "physac.h"
-}
-
-#include "test.hpp"
+#include "Libs.hpp"
 
 #define VELOCITY    0.5f
 
@@ -29,9 +21,9 @@ int main()
     InitPhysics();
 
     // Create floor and walls
-    PhysicsBody floor = CreatePhysicsBodyRectangle((Vector2){ screenWidth/2, screenHeight }, screenWidth, 100, 10);
-    PhysicsBody wallLeft = CreatePhysicsBodyRectangle((Vector2){ -5, screenHeight/2 }, 10, screenHeight, 10);
-    PhysicsBody wallRight = CreatePhysicsBodyRectangle((Vector2){ screenWidth + 5, screenHeight/2 }, 10, screenHeight, 10);
+    PhysicsBody floor = CreatePhysicsBodyRectangle((Vector2){ screenWidth/2, screenHeight }, screenWidth*2, 100, 10);
+    PhysicsBody wallLeft = CreatePhysicsBodyRectangle((Vector2){ -5-screenWidth/2, screenHeight/2 }, 10, screenHeight, 10);
+    PhysicsBody wallRight = CreatePhysicsBodyRectangle((Vector2){ (screenWidth*1.5) + 5, screenHeight/2 }, 10, screenHeight, 10);
 
     // Disable dynamics to floor and walls physics bodies
     floor->enabled = false;
@@ -42,7 +34,13 @@ int main()
     PhysicsBody body = CreatePhysicsBodyRectangle((Vector2){ screenWidth/2, screenHeight/2 }, 50, 50, 1);
     body->freezeOrient = true;      // Constrain body rotation to avoid little collision torque amounts
 
-     SetTargetFPS(60);               // Set our game to run at 60 frames-per-second
+    Camera2D camera = {0};
+    camera.target = (Vector2){body->position.x + 25, body->position.y + 25};
+    camera.offset = (Vector2){ screenWidth/2, screenHeight/2 };
+    camera.rotation = 0.0f;
+    camera.zoom = 1.0f;
+
+    SetTargetFPS(60);               // Set our game to run at 60 frames-per-second
     //--------------------------------------------------------------------------------------
 
     // Main game loop
@@ -60,11 +58,13 @@ int main()
             SetPhysicsBodyRotation(body, 0);
         }
 
-        body->dynamicFriction = PLAYER_DYNAMIC_FRICTION;
+        body->dynamicFriction = 1;
 
         // Horizontal movement input
         if (IsKeyDown(KEY_RIGHT)) body->velocity.x = VELOCITY;
         else if (IsKeyDown(KEY_LEFT)) body->velocity.x = -VELOCITY;
+
+        camera.target = (Vector2){ body->position.x + 25, camera.target.y };
 
         // Vertical movement input checking if player physics body is grounded
         if (IsKeyDown(KEY_UP) && body->isGrounded) body->velocity.y = -VELOCITY*4;
@@ -77,6 +77,8 @@ int main()
             ClearBackground(BLACK);
 
             DrawFPS(screenWidth - 90, screenHeight - 30);
+
+            BeginMode2D(camera);
 
             // Draw created physics bodies
             int bodiesCount = GetPhysicsBodiesCount();
@@ -97,6 +99,8 @@ int main()
                     DrawLineV(vertexA, vertexB, GREEN);     // Draw a line between two vertex positions
                 }
             }
+
+            EndMode2D();
 
             DrawText("Use 'ARROWS' to move player", 10, 10, 10, WHITE);
             DrawText("Press 'R' to reset example", 10, 30, 10, WHITE);
