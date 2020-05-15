@@ -8,6 +8,9 @@
 #ifndef MECHA_LIBS_HPP
 #define MECHA_LIBS_HPP
 
+#include <string>
+#include <iostream>
+
 extern "C"{
     #include "raylib.h"
     #define PHYSAC_IMPLEMENTATION

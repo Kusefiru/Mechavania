@@ -15,8 +15,7 @@ class PlayerEntity : public Entity
         int getOxygenLevel();
         int setOxygenLevel();
 
-        PlayerEntity();
-        ~PlayerEntity();
+        PlayerEntity(Vector2 pos, int width, int height, int density, std::string textureName);
 
     private:
         int lifePoints;

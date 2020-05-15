@@ -8,13 +8,12 @@
 #ifndef MECHA_ENTITY_HPP
 #define MECHA_ENTITY_HPP
 
-#include <string>
 #include "Libs.hpp"
 
 class Entity 
 {
     public:
-        PhysicsBody getPhysicsBody();
+        PhysicsBody& getPhysicsBody();
 
         bool getIsPassable();
         void setIsPassable(bool newIsPassable);

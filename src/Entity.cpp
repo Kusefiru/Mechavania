@@ -7,7 +7,7 @@
 
 #include "Entity.hpp"
 
-PhysicsBody Entity::getPhysicsBody(){
+PhysicsBody& Entity::getPhysicsBody(){
     return this->body;
 }
 
@@ -27,6 +27,7 @@ void Entity::setTexture(std::string newTextureName){
 Entity::Entity(Vector2 pos, int width, int height, int density, std::string textureName){
     // Create the PhysicsBody associated with the Entity
     this->body = CreatePhysicsBodyRectangle(pos, width, height, density);
+    std::cout<<"yo"<<std::endl;
     // Set the Texture Name
     this->textureName = textureName;
     // Create the Texture

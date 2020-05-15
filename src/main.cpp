@@ -6,6 +6,7 @@
 ********************************************************************************************/
 #include "Libs.hpp"
 #include "Mcamera.hpp"
+#include "PlayerEntity.hpp"
 
 #define VELOCITY    0.5f
 
@@ -34,6 +35,9 @@ int main()
     // Create movement physics body
     PhysicsBody body = CreatePhysicsBodyRectangle((Vector2){ screenWidth/2, screenHeight/2 }, 50, 50, 1);
     body->freezeOrient = true;      // Constrain body rotation to avoid little collision torque amounts
+
+    PlayerEntity player = PlayerEntity((Vector2){ screenWidth/2+100, screenHeight/2 }, 60, 60, 1, "");
+    player.getPhysicsBody()->freezeOrient = false;
 
     Mcamera mainCamera;
     mainCamera.setFollowedPhysicsBody(&body);
@@ -101,10 +105,20 @@ int main()
                 }
             }
 
+            for (int k = 0; k < (player.getPhysicsBody()->shape.vertexData.vertexCount) ; k++){
+                Vector2 vertexC = GetPhysicsShapeVertex(player.getPhysicsBody(), k);
+                int kk = (((k + 1) < player.getPhysicsBody()->shape.vertexData.vertexCount) ? (k + 1) : 0);   // Get next vertex or first to close the shape
+                Vector2 vertexD = GetPhysicsShapeVertex(player.getPhysicsBody(), kk);
+
+                DrawLineV(vertexC, vertexD, RED);     // Draw a line between two vertex positions
+            }
+
             EndMode2D();
 
             DrawText("Use 'ARROWS' to move player", 10, 10, 10, WHITE);
             DrawText("Press 'R' to reset example", 10, 30, 10, WHITE);
+            DrawText(FormatText("%d bodies", bodiesCount), 10, 50, 10, WHITE);
+            DrawText(FormatText("%d", player.getPhysicsBody()->freezeOrient), 10, 70, 10, WHITE);
 
         EndDrawing();
         //----------------------------------------------------------------------------------
