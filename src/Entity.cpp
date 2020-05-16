@@ -26,7 +26,7 @@ void Entity::setTexture(std::string newTextureName){
 
 Entity::Entity(Vector2 pos, int width, int height, int density, std::string textureName){
     // Create the PhysicsBody associated with the Entity
-    this->body = CreatePhysicsBodyRectangle(pos, width, height, density);
+    this->body = glMphysac->CreatePhysicsBodyRectangle(pos, width, height, density);
     std::cout<<"yo"<<std::endl;
     // Set the Texture Name
     this->textureName = textureName;
@@ -35,5 +35,5 @@ Entity::Entity(Vector2 pos, int width, int height, int density, std::string text
 
 Entity::~Entity(){
     // Destroys this PhysicsBody
-    DestroyPhysicsBody(this->body);
+    glMphysac->DestroyPhysicsBody(this->body);
 }

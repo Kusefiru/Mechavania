@@ -20,12 +20,12 @@ int main()
     InitWindow(screenWidth, screenHeight, "Mechavania");
 
     // Initialize physics and default physics bodies
-    InitPhysics();
+    glMphysac->InitPhysics();
 
     // Create floor and walls
-    PhysicsBody floor = CreatePhysicsBodyRectangle((Vector2){ screenWidth/2, screenHeight }, screenWidth*2, 100, 10);
-    PhysicsBody wallLeft = CreatePhysicsBodyRectangle((Vector2){ -5-screenWidth/2, screenHeight/2 }, 10, screenHeight, 10);
-    PhysicsBody wallRight = CreatePhysicsBodyRectangle((Vector2){ (screenWidth*1.5) + 5, screenHeight/2 }, 10, screenHeight, 10);
+    PhysicsBody floor = glMphysac->CreatePhysicsBodyRectangle((Vector2){ screenWidth/2, screenHeight }, screenWidth*2, 100, 10);
+    PhysicsBody wallLeft = glMphysac->CreatePhysicsBodyRectangle((Vector2){ -5-screenWidth/2, screenHeight/2 }, 10, screenHeight, 10);
+    PhysicsBody wallRight = glMphysac->CreatePhysicsBodyRectangle((Vector2){ (screenWidth*1.5) + 5, screenHeight/2 }, 10, screenHeight, 10);
 
     // Disable dynamics to floor and walls physics bodies
     floor->enabled = false;
@@ -33,7 +33,7 @@ int main()
     wallRight->enabled = false;
 
     // Create movement physics body
-    PhysicsBody body = CreatePhysicsBodyRectangle((Vector2){ screenWidth/2, screenHeight/2 }, 50, 50, 1);
+    PhysicsBody body = glMphysac->CreatePhysicsBodyRectangle((Vector2){ screenWidth/2, screenHeight/2 }, 50, 50, 1);
     body->freezeOrient = true;      // Constrain body rotation to avoid little collision torque amounts
 
     PlayerEntity player = PlayerEntity((Vector2){ screenWidth/2+100, screenHeight/2 }, 60, 60, 1, "");
@@ -51,14 +51,14 @@ int main()
     {
         // Update
         //----------------------------------------------------------------------------------
-        RunPhysicsStep();
+        glMphysac->RunPhysicsStep();
 
         if (IsKeyPressed('R'))    // Reset physics input
         {
             // Reset movement physics body position, velocity and rotation
             body->position = (Vector2){ screenWidth/2, screenHeight/2 };
             body->velocity = (Vector2){ 0, 0 };
-            SetPhysicsBodyRotation(body, 0);
+            glMphysac->SetPhysicsBodyRotation(body, 0);
         }
 
         body->dynamicFriction = 1;
@@ -86,32 +86,32 @@ int main()
             BeginMode2D(mainCamera.getCamera());
 
             // Draw created physics bodies
-            int bodiesCount = GetPhysicsBodiesCount();
+            int bodiesCount = glMphysac->GetPhysicsBodiesCount();
             for (int i = 0; i < bodiesCount; i++)
             {
-                PhysicsBody body = GetPhysicsBody(i);
+                PhysicsBody body = glMphysac->GetPhysicsBody(i);
 
-                int vertexCount = GetPhysicsShapeVerticesCount(i);
+                int vertexCount = glMphysac->GetPhysicsShapeVerticesCount(i);
                 for (int j = 0; j < vertexCount; j++)
                 {
                     // Get physics bodies shape vertices to draw lines
                     // Note: GetPhysicsShapeVertex() already calculates rotation transformations
-                    Vector2 vertexA = GetPhysicsShapeVertex(body, j);
+                    Vector2 vertexA = glMphysac->GetPhysicsShapeVertex(body, j);
 
                     int jj = (((j + 1) < vertexCount) ? (j + 1) : 0);   // Get next vertex or first to close the shape
-                    Vector2 vertexB = GetPhysicsShapeVertex(body, jj);
+                    Vector2 vertexB = glMphysac->GetPhysicsShapeVertex(body, jj);
 
                     DrawLineV(vertexA, vertexB, GREEN);     // Draw a line between two vertex positions
                 }
             }
 
-            for (int k = 0; k < (player.getPhysicsBody()->shape.vertexData.vertexCount) ; k++){
-                Vector2 vertexC = GetPhysicsShapeVertex(player.getPhysicsBody(), k);
+            /*for (int k = 0; k < (player.getPhysicsBody()->shape.vertexData.vertexCount) ; k++){
+                Vector2 vertexC = glMphysac->GetPhysicsShapeVertex(player.getPhysicsBody(), k);
                 int kk = (((k + 1) < player.getPhysicsBody()->shape.vertexData.vertexCount) ? (k + 1) : 0);   // Get next vertex or first to close the shape
-                Vector2 vertexD = GetPhysicsShapeVertex(player.getPhysicsBody(), kk);
+                Vector2 vertexD = glMphysac->GetPhysicsShapeVertex(player.getPhysicsBody(), kk);
 
                 DrawLineV(vertexC, vertexD, RED);     // Draw a line between two vertex positions
-            }
+            }*/
 
             EndMode2D();
 
@@ -126,7 +126,7 @@ int main()
 
     // De-Initialization
     //--------------------------------------------------------------------------------------
-    ClosePhysics();       // Unitialize physics
+    glMphysac->ClosePhysics();       // Unitialize physics
 
     CloseWindow();        // Close window and OpenGL context
     //--------------------------------------------------------------------------------------

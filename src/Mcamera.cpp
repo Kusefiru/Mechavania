@@ -31,6 +31,6 @@ Mcamera::Mcamera(){
     this->camera.rotation = 0.0f;
     this->camera.zoom = 1.0f;
 
-    this->cameraPhysicsBody = CreatePhysicsBodyRectangle(camera.target, 1, 1, 1);
+    this->cameraPhysicsBody = glMphysac->CreatePhysicsBodyRectangle(camera.target, 1, 1, 1);
     this->followedPhysicsBody = nullptr;
 }

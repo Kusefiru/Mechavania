@@ -192,7 +192,7 @@ endif
 #  -std=gnu99           defines C language mode (GNU C from 1999 revision)
 #  -Wno-missing-braces  ignore invalid warning (GCC bug 53119)
 #  -D_DEFAULT_SOURCE    use with -std=c99 on Linux and PLATFORM_WEB, required for timespec
-CFLAGS += -D_DEFAULT_SOURCE -Wno-missing-braces
+CFLAGS += -D_DEFAULT_SOURCE -Wno-missing-braces -pthread
 
 ifeq ($(BUILD_MODE),DEBUG)
     CFLAGS += -g -O0
@@ -357,7 +357,7 @@ OBJ_DIR = obj
 # Define all object files from source files
 SRC = $(wildcard $(SRC_DIR)/*.cpp)
 #OBJS = $(SRC:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
-OBJS = $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRC))
+OBJS = $(patsubst $(SRC_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(SRC))
 
 # For Android platform we call a custom Makefile.Android
 ifeq ($(PLATFORM),PLATFORM_ANDROID)
@@ -379,15 +379,15 @@ $(PROJECT_NAME): $(OBJS)
 
 # Compile source files
 # NOTE: This pattern will compile every module defined on $(OBJS)
-#%.o: %.c
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
+#%.o: %.cpp
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
 	$(CC) -c $< -o $@ $(CFLAGS) $(INCLUDE_PATHS) -D$(PLATFORM)
 
 # Clean everything
 clean:
 ifeq ($(PLATFORM),PLATFORM_DESKTOP)
     ifeq ($(PLATFORM_OS),WINDOWS)
-		del *.o *.exe /s
+		rm -f obj/* *.exe
     endif
     ifeq ($(PLATFORM_OS),LINUX)
 	find -type f -executable | xargs file -i | grep -E 'x-object|x-archive|x-sharedlib|x-executable' | rev | cut -d ':' -f 2- | rev | xargs rm -fv

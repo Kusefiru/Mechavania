@@ -13,11 +13,16 @@
 
 extern "C"{
     #include "raylib.h"
-    #define PHYSAC_IMPLEMENTATION
+    /*#define PHYSAC_IMPLEMENTATION
     #define PHYSAC_NO_THREADS
     #define PHYSAC_STATIC
-    #include "physac.h"
+    #include "physac.h"*/
 }
+
+#include "Mphysac.hpp"
+
+extern Mphysac *glMphysac;
+
 
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 450
