@@ -269,8 +269,6 @@ ifeq ($(PLATFORM),PLATFORM_DESKTOP)
     endif
 endif
 
-INCLUDE_PATHS += -I./include
-
 # Define library paths containing required libs.
 LDFLAGS = -L. -L$(RAYLIB_RELEASE_PATH) -L$(RAYLIB_PATH)/src
 
@@ -350,14 +348,17 @@ endif
 # Define a recursive wildcard function
 rwildcard=$(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2) $(filter $(subst *,%,$2),$d))
 
+##### Place to add new folders
 # Define all source files required
-SRC_DIR = src
+SRC_DIR = ./src ./src/MPhysac
 OBJ_DIR = obj
 
 # Define all object files from source files
-SRC = $(wildcard $(SRC_DIR)/*.cpp)
+SRC = $(foreach sdir,$(SRC_DIR),$(wildcard $(sdir)/*cpp))
 #OBJS = $(SRC:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
 OBJS = $(patsubst $(SRC_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(SRC))
+
+INCLUDE_PATHS += $(addprefix -I,$(SRC_DIR)) -I./include
 
 # For Android platform we call a custom Makefile.Android
 ifeq ($(PLATFORM),PLATFORM_ANDROID)

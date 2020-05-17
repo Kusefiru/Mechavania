@@ -14,15 +14,15 @@ class Mcamera
 {
     public:
         void update();
-        void setFollowedPhysicsBody(PhysicsBody* body);
+        void setFollowedPhysicsBody(MPhysacBody* body);
         Camera2D& getCamera();
 
         Mcamera();
 
     private:
         Camera2D camera;
-        PhysicsBody cameraPhysicsBody;
-        PhysicsBody* followedPhysicsBody;
+        MPhysacBody* cameraPhysicsBody;
+        MPhysacBody* followedPhysicsBody;
 };
 
 #endif

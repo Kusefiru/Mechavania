@@ -7,4 +7,4 @@
 
 #include "Libs.hpp"
 
-Mphysac *glMphysac = &Mphysac::getInstance();
+MPhysacWorld *glMPhysac = &MPhysacWorld::getInstance();

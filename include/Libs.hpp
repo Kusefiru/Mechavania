@@ -19,9 +19,9 @@ extern "C"{
     #include "physac.h"*/
 }
 
-#include "Mphysac.hpp"
+#include "MPhysacWorld.hpp"
 
-extern Mphysac *glMphysac;
+extern MPhysacWorld *glMPhysac;
 
 
 #define SCREEN_WIDTH 800

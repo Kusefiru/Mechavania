@@ -13,10 +13,14 @@
 class Entity 
 {
     public:
-        PhysicsBody& getPhysicsBody();
+        MPhysacBody* body;
 
         bool getIsPassable();
         void setIsPassable(bool newIsPassable);
+
+        bool getIsSpawned();
+        void spawn();
+        void despawn();
 
         void setTexture(std::string newTextureName);
 
@@ -24,8 +28,8 @@ class Entity
         ~Entity();
 
     private:
-        PhysicsBody body;
-        bool isPassable;
+        bool isPassable;        // If the Entity is passable by the player / the ennemis
+        bool isSpawned;         // If the Entity is spawned
         std::string textureName;
         Texture2D texture;
 };

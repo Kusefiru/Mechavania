@@ -11,6 +11,7 @@
 	"cmake.configureOnOpen": false,
 	"C_Cpp.errorSquiggles": "Disabled",
 	"files.associations": {
-		"limits": "cpp"
+		"limits": "cpp",
+		"thread": "cpp"
 	}
 }
