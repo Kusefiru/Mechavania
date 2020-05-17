@@ -350,7 +350,7 @@ rwildcard=$(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2) $(filter $(subst 
 
 ##### Place to add new folders
 # Define all source files required
-SRC_DIR = ./src ./src/MPhysac
+SRC_DIR = ./src ./src/Entity ./src/MCamera ./src/MPhysac
 OBJ_DIR = obj
 
 # Define all object files from source files

@@ -7,7 +7,7 @@
 #include <iostream>
 
 #include "Libs.hpp"
-#include "Mcamera.hpp"
+#include "MCamera.hpp"
 #include "PlayerEntity.hpp"
 
 #define VELOCITY    0.5f
@@ -41,7 +41,7 @@ int main()
     PlayerEntity player = PlayerEntity((Vector2){ screenWidth/2+10, screenHeight/2 }, 60, 60, 1, "");
     player.body->freezeOrient = true;
 
-    Mcamera mainCamera;
+    MCamera mainCamera;
     mainCamera.setFollowedPhysicsBody(player.body);
     mainCamera.getCamera().target = (Vector2){body->position.x, body->position.y};
 
@@ -85,7 +85,7 @@ int main()
 
             DrawFPS(screenWidth - 90, screenHeight - 30);
 
-            //BeginMode2D(mainCamera.getCamera());
+            BeginMode2D(mainCamera.getCamera());
 
             // Draw created physics bodies
             int bodiesCount = glMPhysac->GetMPhysacBodiesCount();
@@ -115,7 +115,7 @@ int main()
                 DrawLineV(vertexC, vertexD, RED);     // Draw a line between two vertex positions
             }*/
 
-            //EndMode2D();
+            EndMode2D();
 
             DrawText("Use 'ARROWS' to move player", 10, 10, 10, WHITE);
             DrawText("Press 'R' to reset example", 10, 30, 10, WHITE);

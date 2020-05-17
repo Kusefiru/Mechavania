@@ -1,13 +1,13 @@
 /*******************************************************************************************
-*   Mcamera.cpp
+*   MCamera.cpp
 *
-*   This file designs the Mcamera class for the game camera
+*   This file designs the MCamera class for the game camera
 *
 ********************************************************************************************/
 
-#include "Mcamera.hpp"
+#include "MCamera.hpp"
 
-void Mcamera::update() {
+void MCamera::update() {
     if(this->followedPhysicsBody != nullptr) {
         this->camera.target = (Vector2){(this->followedPhysicsBody)->position.x, (this->followedPhysicsBody)->position.y}; // TODO : the camera is not centered on the entity for now
     } else {
@@ -15,16 +15,16 @@ void Mcamera::update() {
     }
 }
 
-void Mcamera::setFollowedPhysicsBody(MPhysacBody* body){
+void MCamera::setFollowedPhysicsBody(MPhysacBody* body){
     this->followedPhysicsBody = body;
     this->update();
 }
 
-Camera2D& Mcamera::getCamera(){
+Camera2D& MCamera::getCamera(){
     return this->camera;
 }
 
-Mcamera::Mcamera(){
+MCamera::MCamera(){
     this->camera = {0};
     this->camera.offset = (Vector2){ SCREEN_WIDTH/2, SCREEN_WIDTH/2 };
     this->camera.target = (Vector2){ SCREEN_WIDTH/2, SCREEN_WIDTH/2 };

@@ -1,7 +1,7 @@
 /*******************************************************************************************
-*   Mcamera.hpp
+*   MCamera.hpp
 *
-*   This file designs the Mcamera class for the game camera
+*   This file designs the MCamera class for the game camera
 *
 ********************************************************************************************/
 
@@ -10,14 +10,14 @@
 
 #include "Libs.hpp"
 
-class Mcamera
+class MCamera
 {
     public:
         void update();
         void setFollowedPhysicsBody(MPhysacBody* body);
         Camera2D& getCamera();
 
-        Mcamera();
+        MCamera();
 
     private:
         Camera2D camera;
