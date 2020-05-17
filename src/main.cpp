@@ -4,6 +4,8 @@
 *
 *
 ********************************************************************************************/
+#include <iostream>
+
 #include "Libs.hpp"
 #include "Mcamera.hpp"
 #include "PlayerEntity.hpp"
@@ -23,19 +25,19 @@ int main()
     glMPhysac->InitPhysics();
 
     // Create floor and walls
-    MPhysacBody floor = *glMPhysac->CreatePhysicsBodyRectangle((Vector2){ screenWidth/2, screenHeight }, screenWidth*2, 100, 10);
-    //MPhysacBody wallLeft = *glMPhysac->CreatePhysicsBodyRectangle((Vector2){ -5-screenWidth/2, screenHeight/2 }, 10, screenHeight, 10);
-    //MPhysacBody wallRight = *glMPhysac->CreatePhysicsBodyRectangle((Vector2){ (screenWidth*1.5) + 5, screenHeight/2 }, 10, screenHeight, 10);
+    MPhysacBody *floor = glMPhysac->CreatePhysicsBodyRectangle((Vector2){ screenWidth/2, screenHeight }, screenWidth*2, 100, 10);
+    MPhysacBody *wallLeft = glMPhysac->CreatePhysicsBodyRectangle((Vector2){ -5-screenWidth/2, screenHeight/2 }, 10, screenHeight, 10);
+    MPhysacBody *wallRight = glMPhysac->CreatePhysicsBodyRectangle((Vector2){ (screenWidth*1.5) + 5, screenHeight/2 }, 10, screenHeight, 10);
 
     // Disable dynamics to floor and walls physics bodies
-    //floor.enabled = false;
-    //wallLeft.enabled = false;
-    //wallRight.enabled = false;
+    floor->enabled = false;
+    wallLeft->enabled = false;
+    wallRight->enabled = false;
 
     // Create movement physics body
-    //MPhysacBody body = *glMPhysac->CreatePhysicsBodyRectangle((Vector2){ screenWidth/2, screenHeight/2 }, 50, 50, 1);
-    //body.freezeOrient = true;      // Constrain body rotation to avoid little collision torque amounts
-    //body.enabled = false;
+    MPhysacBody *body = glMPhysac->CreatePhysicsBodyRectangle((Vector2){ screenWidth/2, screenHeight/2 }, 50, 50, 1);
+    body->freezeOrient = true;      // Constrain body rotation to avoid little collision torque amounts
+    body->useGravity = false;
 
     //PlayerEntity player = PlayerEntity((Vector2){ screenWidth/2+10, screenHeight/2 }, 60, 60, 1, "");
     //player.body->freezeOrient = true;
@@ -67,7 +69,13 @@ int main()
         // Horizontal movement input
         if (IsKeyDown(KEY_RIGHT)) player.body->velocity.x = VELOCITY;
         else if (IsKeyDown(KEY_LEFT)) player.body->velocity.x = -VELOCITY;
+        */
+        if (IsKeyDown(KEY_RIGHT)) body->velocity.x = VELOCITY;
+        else if (IsKeyDown(KEY_LEFT)) body->velocity.x = -VELOCITY;
+        if (IsKeyDown(KEY_UP)) body->velocity.y = -VELOCITY;
+        else if (IsKeyDown(KEY_DOWN)) body->velocity.y = VELOCITY;
 
+        /*
         //mainCamera.update();
         //mainCamera.getCamera().target = (Vector2){body->position.x, body->position.y};
         mainCamera.update();
@@ -87,24 +95,24 @@ int main()
             //BeginMode2D(mainCamera.getCamera());
 
             // Draw created physics bodies
-            /*int bodiesCount = glMPhysac->GetMPhysacBodiesCount();
+            int bodiesCount = glMPhysac->GetMPhysacBodiesCount();
             for (int i = 0; i < bodiesCount; i++)
             {
-                MPhysacBody body = *glMPhysac->GetMPhysacBody(i);
+                MPhysacBody *body = glMPhysac->GetMPhysacBody(i);
 
-                int vertexCount = body.GetMPhysacBodyShapeVerticesCount();
+                int vertexCount = body->GetMPhysacBodyShapeVerticesCount();
                 for (int j = 0; j < vertexCount; j++)
                 {
                     // Get physics bodies shape vertices to draw lines
                     // Note: GetPhysicsShapeVertex() already calculates rotation transformations
-                    Vector2 vertexA = body.GetMPhysacBodyShapeVertex(j);
+                    Vector2 vertexA = body->GetMPhysacBodyShapeVertex(j);
 
                     int jj = (((j + 1) < vertexCount) ? (j + 1) : 0);   // Get next vertex or first to close the shape
-                    Vector2 vertexB = body.GetMPhysacBodyShapeVertex(jj);
+                    Vector2 vertexB = body->GetMPhysacBodyShapeVertex(jj);
 
                     DrawLineV(vertexA, vertexB, GREEN);     // Draw a line between two vertex positions
                 }
-            }*/
+            }
 
             /*for (int k = 0; k < (player.getPhysicsBody()->shape.vertexData.vertexCount) ; k++){
                 Vector2 vertexC = glMPhysac->GetPhysicsShapeVertex(player.getPhysicsBody(), k);
@@ -118,7 +126,8 @@ int main()
 
             DrawText("Use 'ARROWS' to move player", 10, 10, 10, WHITE);
             DrawText("Press 'R' to reset example", 10, 30, 10, WHITE);
-            //DrawText(FormatText("%d bodies", bodiesCount), 10, 50, 10, WHITE);
+            DrawText(FormatText("%d bodies", bodiesCount), 10, 50, 10, WHITE);
+            DrawText(FormatText("%d manifolds", glMPhysac->GetManifoldsCount()), 10, 70, 10, WHITE);
             //DrawText(FormatText("%d", player.body->freezeOrient), 10, 70, 10, WHITE);
 
         EndDrawing();

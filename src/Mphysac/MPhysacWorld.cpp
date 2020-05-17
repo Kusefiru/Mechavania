@@ -77,6 +77,11 @@ int MPhysacWorld::GetMPhysacBodiesCount(){
     return bodies.size();
 }
 
+// Returns the number of bodies registered in the MPhysacWorld
+int MPhysacWorld::GetManifoldsCount(){
+    return contacts.size();
+}
+
 // Returns a MPhysacBody of the bodies pool at a specific index
 MPhysacBody* MPhysacWorld::GetMPhysacBody(int index)
 {
@@ -105,14 +110,14 @@ void MPhysacWorld::ResetPhysics(void)
     // Delete all MPhysacBodies and empty the list
     while(bodies.size() > 0)
     {
-        delete &bodies.back();
+        delete bodies.back();
         bodies.pop_back();
     }
 
     // Delete all MPhysacManifolds and empty the list
     while(contacts.size() > 0)
     {
-        delete &contacts.back();
+        delete contacts.back();
         contacts.pop_back();
     }
 }
@@ -166,19 +171,19 @@ void MPhysacWorld::PhysicsStep(void)
 {
     // Update current steps count
     stepsCount++;
-
+    
     // Clear previous generated collisions information
     for (int i = contacts.size() - 1; i >= 0; i--)
     {
         DestroyPhysicsManifold(contacts.at(i));
     }
-
+    
     // Reset physics bodies grounded state
     for (int i = 0; i < bodies.size(); i++)
     {
         bodies.at(i)->isGrounded = false;
     }
-
+    
     // Generate new collision information
     for (int i = 0; i < bodies.size(); i++)
     {
@@ -208,40 +213,40 @@ void MPhysacWorld::PhysicsStep(void)
             }
         }
     }
-
+    
     // Integrate forces to physics bodies
     for (int i = 0; i < bodies.size(); i++)
     {
         IntegratePhysicsForces(bodies.at(i));
     }
-
+    
     // Initialize physics manifolds to solve collisions
     for (int i = 0; i < contacts.size(); i++)
     {
         InitializePhysicsManifolds(contacts.at(i));
     }
-
+    
     // Integrate physics collisions impulses to solve collisions
     for (int i = 0; i < PHYSAC_COLLISION_ITERATIONS; i++)
     {
         for (int j = 0; j < contacts.size(); j++)
         {
-            IntegratePhysicsImpulses(contacts.at(i));
+            IntegratePhysicsImpulses(contacts.at(j));
         }
     }
-
+    
     // Integrate velocity to physics bodies
     for (int i = 0; i < bodies.size(); i++)
     {
         IntegratePhysicsVelocity(bodies.at(i));
     }
-
+    
     // Correct physics bodies positions based on manifolds collision information
     for (int i = 0; i < contacts.size(); i++)
     {
         CorrectPhysicsPositions(contacts.at(i));
     }
-
+    
     // Clear physics bodies forces
     for (int i = 0; i < bodies.size(); i++)
     {
@@ -285,19 +290,7 @@ void MPhysacWorld::SetPhysicsTimeStep(double delta)
 // Creates a new physics manifold to solve collision
 PhysicsManifold* MPhysacWorld::CreatePhysicsManifold(MPhysacBody *a, MPhysacBody *b)
 {
-    PhysicsManifold *newManifold = new PhysicsManifold;
-
-    // Initialize new manifold with generic values
-    newManifold->bodyA = a;
-    newManifold->bodyB = b;
-    newManifold->penetration = 0;
-    newManifold->normal = PHYSAC_VECTOR_ZERO;
-    newManifold->contacts[0] = PHYSAC_VECTOR_ZERO;
-    newManifold->contacts[1] = PHYSAC_VECTOR_ZERO;
-    newManifold->contactsCount = 0;
-    newManifold->restitution = 0.0f;
-    newManifold->dynamicFriction = 0.0f;
-    newManifold->staticFriction = 0.0f;
+    PhysicsManifold *newManifold = new PhysicsManifold(a, b);
 
     // Add new body to bodies pointers array and update bodies count
     contacts.push_back(newManifold);
@@ -664,7 +657,7 @@ void MPhysacWorld::IntegratePhysicsImpulses(PhysicsManifold *manifold)
         bodyB->velocity = PHYSAC_VECTOR_ZERO;
         return;
     }
-
+    
     for (int i = 0; i < manifold->contactsCount; i++)
     {
         // Calculate radius from center of mass to contact

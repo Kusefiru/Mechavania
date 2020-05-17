@@ -32,6 +32,7 @@ class MPhysacWorld
         MPhysacBody* CreatePhysicsBodyRectangle(Vector2 pos, float width, float height, float density);    // Creates a new rectangle physics body with generic parameters
         MPhysacBody* CreatePhysicsBodyPolygon(Vector2 pos, float radius, int sides, float density);        // Creates a new polygon physics body with generic parameters
         int GetMPhysacBodiesCount(void);                                                                  // Returns the current amount of created physics bodies    
+        int GetManifoldsCount(void);
         MPhysacBody* GetMPhysacBody(int index);                                                           // Returns a physics body of the bodies pool at a specific index
         void DestroyMPhysacBody(MPhysacBody *body);                                                        // Unitializes and destroy a physics body
         void ResetPhysics(void);                                                                          // Destroys created physics bodies and manifolds and resets global values

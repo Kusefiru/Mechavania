@@ -59,6 +59,10 @@ class PhysicsManifold {
         float restitution;                          // Mixed restitution during collision
         float dynamicFriction;                      // Mixed dynamic friction during collision
         float staticFriction;                       // Mixed static friction during collision
+
+    private:
+        friend class MPhysacWorld;
+        PhysicsManifold(MPhysacBody *body1, MPhysacBody *body2);
 };
 
 #endif

@@ -60,11 +60,12 @@ MPhysacBody::MPhysacBody(Vector2 pos, MPhysacShapeType type, Vector2 dim, int de
     shape.radius = 0.0f;
     shape.transform = MPhysac::Mat2Radians(0.0f);
 
-    /*switch(type){
-        case MPHYSAC_BOX: shape.vertexData = PolygonData::CreateRectanglePolygon(pos, dim); break; // TODO : segfault here
-        case MPHYSAC_POLYGON: shape.vertexData = PolygonData::CreateRandomPolygon(dim.x, dim.y); break;
+    switch(type){
+        case MPHYSAC_BOX: shape.vertexData.CreateRectanglePolygon(pos, dim); break; // TODO : segfault here
+        case MPHYSAC_POLYGON: shape.vertexData.CreateRandomPolygon(dim.x, dim.y); break;
+        case MPHYSAC_CIRCLE: shape.vertexData.CreateRandomPolygon(dim.x, dim.y); break;
         default: break;
-    }*/
+    }
 
     // Calculate centroid and moment of inertia
     Vector2 center = { 0.0f, 0.0f };
@@ -113,4 +114,18 @@ MPhysacBody::MPhysacBody(Vector2 pos, MPhysacShapeType type, Vector2 dim, int de
     useGravity = true;
     isGrounded = false;
     freezeOrient = false;
+}
+
+PhysicsManifold::PhysicsManifold(MPhysacBody *body1, MPhysacBody *body2){
+    // Initialize new manifold with generic values
+    bodyA = body1;
+    bodyB = body2;
+    penetration = 0;
+    normal = PHYSAC_VECTOR_ZERO;
+    contacts[0] = PHYSAC_VECTOR_ZERO;
+    contacts[1] = PHYSAC_VECTOR_ZERO;
+    contactsCount = 0;
+    restitution = 0.0f;
+    dynamicFriction = 0.0f;
+    staticFriction = 0.0f;
 }
