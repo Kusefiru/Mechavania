@@ -37,14 +37,13 @@ int main()
     // Create movement physics body
     MPhysacBody *body = glMPhysac->CreatePhysicsBodyRectangle((Vector2){ screenWidth/2, screenHeight/2 }, 50, 50, 1);
     body->freezeOrient = true;      // Constrain body rotation to avoid little collision torque amounts
-    body->useGravity = false;
 
-    //PlayerEntity player = PlayerEntity((Vector2){ screenWidth/2+10, screenHeight/2 }, 60, 60, 1, "");
-    //player.body->freezeOrient = true;
+    PlayerEntity player = PlayerEntity((Vector2){ screenWidth/2+10, screenHeight/2 }, 60, 60, 1, "");
+    player.body->freezeOrient = true;
 
-    //Mcamera mainCamera;
-    //mainCamera.setFollowedPhysicsBody(player.body);
-    //mainCamera.getCamera().target = (Vector2){body->position.x, body->position.y};
+    Mcamera mainCamera;
+    mainCamera.setFollowedPhysicsBody(player.body);
+    mainCamera.getCamera().target = (Vector2){body->position.x, body->position.y};
 
     SetTargetFPS(60);               // Set our game to run at 60 frames-per-second
     //--------------------------------------------------------------------------------------
@@ -56,7 +55,7 @@ int main()
         //----------------------------------------------------------------------------------
         glMPhysac->RunPhysicsStep();
 
-        /*if (IsKeyPressed('R'))    // Reset physics input
+        if (IsKeyPressed('R'))    // Reset physics input
         {
             // Reset movement physics body position, velocity and rotation
             player.body->position = (Vector2){ screenWidth/2, screenHeight/2 };
@@ -69,19 +68,13 @@ int main()
         // Horizontal movement input
         if (IsKeyDown(KEY_RIGHT)) player.body->velocity.x = VELOCITY;
         else if (IsKeyDown(KEY_LEFT)) player.body->velocity.x = -VELOCITY;
-        */
-        if (IsKeyDown(KEY_RIGHT)) body->velocity.x = VELOCITY;
-        else if (IsKeyDown(KEY_LEFT)) body->velocity.x = -VELOCITY;
-        if (IsKeyDown(KEY_UP)) body->velocity.y = -VELOCITY;
-        else if (IsKeyDown(KEY_DOWN)) body->velocity.y = VELOCITY;
 
-        /*
         //mainCamera.update();
         //mainCamera.getCamera().target = (Vector2){body->position.x, body->position.y};
         mainCamera.update();
 
         // Vertical movement input checking if player physics body is grounded
-        if (IsKeyDown(KEY_UP) && player.body->isGrounded) player.body->velocity.y = -VELOCITY*4;*/
+        if (IsKeyDown(KEY_UP) && player.body->isGrounded) player.body->velocity.y = -VELOCITY*4;
         //----------------------------------------------------------------------------------
 
         // Draw

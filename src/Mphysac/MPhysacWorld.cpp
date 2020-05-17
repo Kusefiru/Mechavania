@@ -325,15 +325,18 @@ void MPhysacWorld::SolvePhysicsManifold(PhysicsManifold *manifold)
             {
                 case MPHYSAC_CIRCLE: SolveCircleToCircle(manifold); break;
                 case MPHYSAC_POLYGON: SolveCircleToPolygon(manifold); break;
+                case MPHYSAC_BOX: SolveCircleToPolygon(manifold); break;
                 default: break;
             }
         } break;
+        case MPHYSAC_BOX:
         case MPHYSAC_POLYGON:
         {
             switch (manifold->bodyB->shape.type)
             {
                 case MPHYSAC_CIRCLE: SolvePolygonToCircle(manifold); break;
                 case MPHYSAC_POLYGON: SolvePolygonToPolygon(manifold); break;
+                case MPHYSAC_BOX: SolvePolygonToPolygon(manifold); break;
                 default: break;
             }
         } break;
