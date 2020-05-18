@@ -172,6 +172,13 @@ typedef struct Matrix2x2 {
 
 enum MPhysacShapeType { MPHYSAC_BOX, MPHYSAC_CIRCLE, MPHYSAC_POLYGON };
 
+// Solid type for physics calculation :
+// - GROUND : for fixed ground solids
+// - PASSABLE : affected by gravity, collides with GROUND solids
+// - NONPASSABLE : affected by gravity, collides with GROUND and others NONPASSABLE solids
+// defaults new solids are NONPASSABLE
+enum MPhysacSolidType { MPHYSAC_GROUND, MPHYSAC_PASSABLE, MPHYSAC_NONPASSABLE };
+
 class MPhysac {
     public:
         // Math functions

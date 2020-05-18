@@ -114,6 +114,7 @@ MPhysacBody::MPhysacBody(Vector2 pos, MPhysacShapeType type, Vector2 dim, int de
     useGravity = true;
     isGrounded = false;
     freezeOrient = false;
+    solidType = MPHYSAC_NONPASSABLE;
 }
 
 PhysicsManifold::PhysicsManifold(MPhysacBody *body1, MPhysacBody *body2){

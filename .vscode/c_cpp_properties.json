@@ -5,7 +5,6 @@
             "includePath": [
                 "C:/raylib/raylib/src/**",
                 "${workspaceFolder}/**",
-                "${workspaceFolder}/include/**",
                 "${workspaceFolder}/src/*/*"
             ],
             "defines": [

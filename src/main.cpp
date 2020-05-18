@@ -30,12 +30,16 @@ int main()
     MPhysacBody *wallRight = glMPhysac->CreatePhysicsBodyRectangle((Vector2){ (screenWidth*1.5) + 5, screenHeight/2 }, 10, screenHeight, 10);
 
     // Disable dynamics to floor and walls physics bodies
+    floor->solidType = MPHYSAC_GROUND;
     floor->enabled = false;
+    wallLeft->solidType = MPHYSAC_GROUND;
     wallLeft->enabled = false;
+    wallRight->solidType = MPHYSAC_GROUND;
     wallRight->enabled = false;
 
     // Create movement physics body
     MPhysacBody *body = glMPhysac->CreatePhysicsBodyRectangle((Vector2){ screenWidth/2, screenHeight/2 }, 50, 50, 1);
+    body->solidType = MPHYSAC_PASSABLE;
     body->freezeOrient = true;      // Constrain body rotation to avoid little collision torque amounts
 
     PlayerEntity player = PlayerEntity((Vector2){ screenWidth/2+10, screenHeight/2 }, 60, 60, 1, "");

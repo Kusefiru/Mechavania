@@ -194,6 +194,8 @@ void MPhysacWorld::PhysicsStep(void)
             MPhysacBody *bodyB = bodies.at(j);
 
             if ((bodyA->inverseMass == 0) && (bodyB->inverseMass == 0)) continue;
+            if ((bodyA->solidType == MPHYSAC_NONPASSABLE) && (bodyB->solidType == MPHYSAC_PASSABLE)) continue;
+            if ((bodyA->solidType == MPHYSAC_PASSABLE) && (bodyB->solidType == MPHYSAC_NONPASSABLE)) continue;
 
             PhysicsManifold *manifold = CreatePhysicsManifold(bodyA, bodyB);
             SolvePhysicsManifold(manifold);

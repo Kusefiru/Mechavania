@@ -34,6 +34,7 @@ class MPhysacBody {
         bool isGrounded;                         // Physics grounded on other body state
         bool freezeOrient;                       // Physics rotation constraint
         MPhysacShape shape;                      // Physics body shape information (type, radius, vertices, normals)
+        MPhysacSolidType solidType;
 
         void PhysicsAddForce(Vector2 force);          // Add force to the MPhysacBody
         void PhysicsAddTorque(float amount);          // Add torque to the MPhysacBody
