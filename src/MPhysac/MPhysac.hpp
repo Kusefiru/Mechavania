@@ -111,9 +111,8 @@ extern "C" {
     #define TRACELOG(...) (void)0
 #endif
 
-#ifndef PHYSAC_STANDALONE
-    #include "raymath.h"            // Required for: Vector2Add(), Vector2Subtract()
-#endif
+#include "Utils/Vector.hpp"            // Required for: Vector2Add(), Vector2Subtract()
+
 
 // Time management functionality
 #include <time.h>                   // Required for: time(), clock_gettime()
@@ -156,7 +155,7 @@ extern "C" {
 #define PHYSAC_FLT_MAX      3.402823466e+38f
 #define PHYSAC_EPSILON      0.000001f
 #define PHYSAC_K            1.0f/3.0f
-#define PHYSAC_VECTOR_ZERO  (Vector2){ 0.0f, 0.0f }
+#define PHYSAC_VECTOR_ZERO  Vector2f()
 
 //----------------------------------------------------------------------------------
 // Data Types Structure Definition
@@ -182,17 +181,17 @@ enum MPhysacSolidType { MPHYSAC_GROUND, MPHYSAC_PASSABLE, MPHYSAC_NONPASSABLE };
 class MPhysac {
     public:
         // Math functions
-        static Vector2 MathCross(float value, Vector2 vector);                                                      // Returns the cross product of a vector and a value
-        static float MathCrossVector2(Vector2 v1, Vector2 v2);                                                      // Returns the cross product of two vectors
-        static float MathLenSqr(Vector2 vector);                                                                    // Returns the len square root of a vector
-        static float MathDot(Vector2 v1, Vector2 v2);                                                               // Returns the dot product of two vectors
-        static float DistSqr(Vector2 v1, Vector2 v2);                                                               // Returns the square root of distance between two vectors
-        static void MathNormalize(Vector2 *vector);                                                                 // Returns the normalized values of a vector
+        static Vector2f MathCross(float value, Vector2f vector);                                                      // Returns the cross product of a vector and a value
+        static float MathCrossVector2(Vector2f v1, Vector2f v2);                                                      // Returns the cross product of two vectors
+        static float MathLenSqr(Vector2f vector);                                                                    // Returns the len square root of a vector
+        static float MathDot(Vector2f v1, Vector2f v2);                                                               // Returns the dot product of two vectors
+        static float DistSqr(Vector2f v1, Vector2f v2);                                                               // Returns the square root of distance between two vectors
+        static void MathNormalize(Vector2f *vector);                                                                 // Returns the normalized values of a vector
 
         static Matrix2x2 Mat2Radians(float radians);                                                                 // Creates a matrix 2x2 from a given radians value
         static void Mat2Set(Matrix2x2 *matrix, float radians);                                                       // Set values from radians to a created matrix 2x2
         static Matrix2x2 Mat2Transpose(Matrix2x2 matrix);                                                            // Returns the transpose of a given matrix 2x2
-        static Vector2 Mat2MultiplyVector2(Matrix2x2 matrix, Vector2 vector);                                        // Multiplies a vector by a matrix 2x2
+        static Vector2f Mat2MultiplyVector2(Matrix2x2 matrix, Vector2f vector);                                        // Multiplies a vector by a matrix 2x2
 };
 
 #endif

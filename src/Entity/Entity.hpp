@@ -24,14 +24,14 @@ class Entity
 
         void setTexture(std::string newTextureName);
 
-        Entity(Vector2 pos, int width, int height, int density, std::string textureName);
+        Entity(const Vector2f &pos, int width, int height, int density, std::string textureName);
         ~Entity();
 
     private:
         bool isPassable;        // If the Entity is passable by the player / the ennemis
         bool isSpawned;         // If the Entity is spawned
         std::string textureName;
-        Texture2D texture;
+        //Texture2D texture;
 };
 
 #endif

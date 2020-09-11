@@ -7,6 +7,6 @@
 
 #include "PlayerEntity.hpp"
 
-PlayerEntity::PlayerEntity(Vector2 pos, int width, int height, int density, std::string textureName) : Entity(pos, width, height, density, textureName){
+PlayerEntity::PlayerEntity(const Vector2f &pos, int width, int height, int density, const std::string &textureName) : Entity(pos, width, height, density, textureName){
     std::cout<<"yo2"<<std::endl;
 };

@@ -8,59 +8,53 @@
 #include "MPhysacBody.hpp"
 
 // Adds a force to a physics body
-void MPhysacBody::PhysicsAddForce(Vector2 addforce)
-{
-    force = Vector2Add(force, addforce);
+void MPhysacBody::PhysicsAddForce(const Vector2f &addforce) {
+    force = force + addforce;
 }
 
 // Adds an angular force to a physics body
-void MPhysacBody::PhysicsAddTorque(float amount)
-{
+void MPhysacBody::PhysicsAddTorque(float amount) {
     torque += amount;
 }
 
 // Returns the physics body shape type (MPHYSAC_BOX, MPHYSAC_CIRCLE or MPHYSAC_POLYGON)
-int MPhysacBody::GetMPhysacBodyShapeType()
-{
+int MPhysacBody::GetMPhysacBodyShapeType() {
     return shape.type;
 }
 
 // Returns the amount of vertices of a physics body shape
-int MPhysacBody::GetMPhysacBodyShapeVerticesCount()
-{
+int MPhysacBody::GetMPhysacBodyShapeVerticesCount() {
     return shape.vertexData.positions.size();
 }
 
 // Returns transformed position of a body shape (body position + vertex transformed position)
-Vector2 MPhysacBody::GetMPhysacBodyShapeVertex(int vertex)
-{
-    return Vector2Add(position, MPhysac::Mat2MultiplyVector2(shape.transform, shape.vertexData.positions[vertex]));
+Vector2f MPhysacBody::GetMPhysacBodyShapeVertex(int vertex) {
+    return position + MPhysac::Mat2MultiplyVector2(shape.transform, shape.vertexData.positions[vertex]);
 }
 
 // Sets physics body shape transform based on radians parameter
-void MPhysacBody::SetMPhysacBodyRotation(float radians)
-{
+void MPhysacBody::SetMPhysacBodyRotation(float radians) {
     orient = radians;
 
     if (shape.type != MPHYSAC_CIRCLE) shape.transform = MPhysac::Mat2Radians(radians);
 }
 
 // Create a MPhysacBody
-MPhysacBody::MPhysacBody(Vector2 pos, MPhysacShapeType type, Vector2 dim, int density){
+MPhysacBody::MPhysacBody(const Vector2f &pos, MPhysacShapeType type, const Vector2f &dim, int density) :
+    enabled(true),
+    position(pos),
+    velocity(),
+    force(),
+    angularVelocity(0.f),
+    torque(0.f),
+    orient(0.f) {
     // Initialize new body with generic values
-    enabled = true;
-    position = pos;
-    velocity = (Vector2){ 0.0f };
-    force = (Vector2){ 0.0f };
-    angularVelocity = 0.0f;
-    torque = 0.0f;
-    orient = 0.0f;
     shape.type = type;
     shape.body = this;
     shape.radius = 0.0f;
     shape.transform = MPhysac::Mat2Radians(0.0f);
 
-    switch(type){
+    switch(type) {
         case MPHYSAC_BOX: shape.vertexData.CreateRectanglePolygon(pos, dim); break; // TODO : segfault here
         case MPHYSAC_POLYGON: shape.vertexData.CreateRandomPolygon(dim.x, dim.y); break;
         case MPHYSAC_CIRCLE: shape.vertexData.CreateRandomPolygon(dim.x, dim.y); break;
@@ -68,16 +62,15 @@ MPhysacBody::MPhysacBody(Vector2 pos, MPhysacShapeType type, Vector2 dim, int de
     }
 
     // Calculate centroid and moment of inertia
-    Vector2 center = { 0.0f, 0.0f };
+    Vector2f center;
     float area = 0.0f;
     float inertia = 0.0f;
 
-    for (int i = 0; i < shape.vertexData.positions.size(); i++)
-    {
+    for (int i = 0; i < shape.vertexData.positions.size(); i++) {
         // Triangle vertices, third vertex implied as (0, 0)
-        Vector2 p1 = shape.vertexData.positions[i];
+        Vector2f p1 = shape.vertexData.positions[i];
         int nextIndex = (((i + 1) < shape.vertexData.positions.size()) ? (i + 1) : 0);
-        Vector2 p2 = shape.vertexData.positions[nextIndex];
+        Vector2f p2 = shape.vertexData.positions[nextIndex];
 
         float D = MPhysac::MathCrossVector2(p1, p2);
         float triangleArea = D/2;
@@ -98,8 +91,7 @@ MPhysacBody::MPhysacBody(Vector2 pos, MPhysacShapeType type, Vector2 dim, int de
 
     // Translate vertices to centroid (make the centroid (0, 0) for the polygon in model space)
     // Note: this is not really necessary
-    for (int i = 0; i < shape.vertexData.positions.size(); i++)
-    {
+    for (int i = 0; i < shape.vertexData.positions.size(); i++) {
         shape.vertexData.positions[i].x -= center.x;
         shape.vertexData.positions[i].y -= center.y;
     }
@@ -117,7 +109,7 @@ MPhysacBody::MPhysacBody(Vector2 pos, MPhysacShapeType type, Vector2 dim, int de
     solidType = MPHYSAC_NONPASSABLE;
 }
 
-PhysicsManifold::PhysicsManifold(MPhysacBody *body1, MPhysacBody *body2){
+PhysicsManifold::PhysicsManifold(MPhysacBody *body1, MPhysacBody *body2) {
     // Initialize new manifold with generic values
     bodyA = body1;
     bodyB = body2;

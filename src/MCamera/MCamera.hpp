@@ -15,12 +15,12 @@ class MCamera
     public:
         void update();
         void setFollowedPhysicsBody(MPhysacBody* body);
-        Camera2D& getCamera();
+        //Camera2D& getCamera();
 
         MCamera();
 
     private:
-        Camera2D camera;
+        //Camera2D camera;
         MPhysacBody* cameraPhysicsBody;
         MPhysacBody* followedPhysicsBody;
 };

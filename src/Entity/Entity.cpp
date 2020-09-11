@@ -16,7 +16,7 @@ void Entity::setIsPassable(bool newIsPassable){
 }
 
 void Entity::setTexture(std::string newTextureName){
-    this->textureName = newTextureName;
+    //this->textureName = newTextureName;
     // Update Texture
 }
 
@@ -32,7 +32,7 @@ void Entity::despawn(){
     isSpawned = false;
 }
 
-Entity::Entity(Vector2 pos, int width, int height, int density, std::string textureName){
+Entity::Entity(const Vector2f &pos, int width, int height, int density, std::string textureName){
     // Create the PhysicsBody associated with the Entity
     this->body = glMPhysac->CreatePhysicsBodyRectangle(pos, width, height, density);
     std::cout<<"yo"<<std::endl;

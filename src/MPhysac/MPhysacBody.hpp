@@ -17,9 +17,9 @@
 class MPhysacBody {
     public:
         bool enabled;                            // Enabled dynamics state (collisions are calculated anyway)
-        Vector2 position;                        // Physics body shape pivot
-        Vector2 velocity;                        // Current linear velocity applied to position
-        Vector2 force;                           // Current linear force (reset to 0 every step)
+        Vector2f position;                       // Physics body shape pivot
+        Vector2f velocity;                       // Current linear velocity applied to position
+        Vector2f force;                          // Current linear force (reset to 0 every step)
         float angularVelocity;                   // Current angular velocity applied to orient
         float torque;                            // Current angular force (reset to 0 every step)
         float orient;                            // Rotation in radians
@@ -36,16 +36,16 @@ class MPhysacBody {
         MPhysacShape shape;                      // Physics body shape information (type, radius, vertices, normals)
         MPhysacSolidType solidType;
 
-        void PhysicsAddForce(Vector2 force);          // Add force to the MPhysacBody
+        void PhysicsAddForce(const Vector2f &force);  // Add force to the MPhysacBody
         void PhysicsAddTorque(float amount);          // Add torque to the MPhysacBody
         int GetMPhysacBodyShapeType();
         int GetMPhysacBodyShapeVerticesCount();
-        Vector2 GetMPhysacBodyShapeVertex(int vertex);
+        Vector2f GetMPhysacBodyShapeVertex(int vertex);
         void SetMPhysacBodyRotation(float radians);
 
     private:
         friend class MPhysacWorld;
-        MPhysacBody(Vector2 pos, MPhysacShapeType type, Vector2 dim, int density);
+        MPhysacBody(const Vector2f &pos, MPhysacShapeType type, const Vector2f &dim, int density);
         
 };
 
@@ -54,8 +54,8 @@ class PhysicsManifold {
         MPhysacBody *bodyA;                         // Manifold first physics body reference
         MPhysacBody *bodyB;                         // Manifold second physics body reference
         float penetration;                          // Depth of penetration from collision
-        Vector2 normal;                             // Normal direction vector from 'a' to 'b'
-        Vector2 contacts[2];                        // Points of contact during collision
+        Vector2f normal;                            // Normal direction vector from 'a' to 'b'
+        Vector2f contacts[2];                       // Points of contact during collision
         unsigned int contactsCount;                 // Current collision number of contacts
         float restitution;                          // Mixed restitution during collision
         float dynamicFriction;                      // Mixed dynamic friction during collision

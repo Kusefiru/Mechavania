@@ -23,20 +23,20 @@ class MPhysacWorld
         //----------------------------------------------------------------------------------
         // Public Functions Declaration
         //----------------------------------------------------------------------------------
-        void InitPhysics(void);                                                                           // Initializes physics values, pointers and creates physics loop thread
-        void RunPhysicsStep(void);                                                                        // Run physics step, to be used if PHYSICS_NO_THREADS is set in your main loop
-        void SetPhysicsTimeStep(double delta);                                                            // Sets physics fixed time step in milliseconds. 1.666666 by default
-        bool IsPhysicsEnabled(void);                                                                      // Returns true if physics thread is currently enabled
-        void SetPhysicsGravity(float x, float y);                                                         // Sets physics global gravity force
-        MPhysacBody* CreatePhysicsBodyCircle(Vector2 pos, float radius, float density);                    // Creates a new circle physics body with generic parameters
-        MPhysacBody* CreatePhysicsBodyRectangle(Vector2 pos, float width, float height, float density);    // Creates a new rectangle physics body with generic parameters
-        MPhysacBody* CreatePhysicsBodyPolygon(Vector2 pos, float radius, int sides, float density);        // Creates a new polygon physics body with generic parameters
-        int GetMPhysacBodiesCount(void);                                                                  // Returns the current amount of created physics bodies    
+        void InitPhysics(void);                                                                                 // Initializes physics values, pointers and creates physics loop thread
+        void RunPhysicsStep(void);                                                                              // Run physics step, to be used if PHYSICS_NO_THREADS is set in your main loop
+        void SetPhysicsTimeStep(double delta);                                                                  // Sets physics fixed time step in milliseconds. 1.666666 by default
+        bool IsPhysicsEnabled(void);                                                                            // Returns true if physics thread is currently enabled
+        void SetPhysicsGravity(float x, float y);                                                               // Sets physics global gravity force
+        MPhysacBody* CreatePhysicsBodyCircle(const Vector2f &pos, float radius, float density);                 // Creates a new circle physics body with generic parameters
+        MPhysacBody* CreatePhysicsBodyRectangle(const Vector2f &pos, float width, float height, float density); // Creates a new rectangle physics body with generic parameters
+        MPhysacBody* CreatePhysicsBodyPolygon(const Vector2f &pos, float radius, int sides, float density);     // Creates a new polygon physics body with generic parameters
+        int GetMPhysacBodiesCount(void);                                                                        // Returns the current amount of created physics bodies    
         int GetManifoldsCount(void);
-        MPhysacBody* GetMPhysacBody(int index);                                                           // Returns a physics body of the bodies pool at a specific index
-        void DestroyMPhysacBody(MPhysacBody *body);                                                        // Unitializes and destroy a physics body
-        void ResetPhysics(void);                                                                          // Destroys created physics bodies and manifolds and resets global values
-        void ClosePhysics(void);                                                                          // Unitializes physics pointers and closes physics loop thread
+        MPhysacBody* GetMPhysacBody(int index);                                                                 // Returns a physics body of the bodies pool at a specific index
+        void DestroyMPhysacBody(MPhysacBody *body);                                                             // Unitializes and destroy a physics body
+        void ResetPhysics(void);                                                                                // Destroys created physics bodies and manifolds and resets global values
+        void ClosePhysics(void);                                                                                // Unitializes physics pointers and closes physics loop thread
 
     private:
         MPhysacWorld() {}                    // Constructor (the {} brackets) are needed here.
@@ -57,7 +57,7 @@ class MPhysacWorld
 
         double accumulator = 0.0;                            // Physics time step delta time accumulator
         unsigned int stepsCount = 0;                         // Total physics steps processed
-        Vector2 gravityForce = { 0.0f, 9.81f };              // Physics world gravity force
+        Vector2f gravityForce = { 0.0f, 9.81f };              // Physics world gravity force
         std::vector<MPhysacBody*> bodies;                    // Physics bodies pointers array
         std::vector<PhysicsManifold*> contacts;               // Physics bodies pointers array
 
@@ -79,12 +79,12 @@ class MPhysacWorld
         void IntegratePhysicsImpulses(PhysicsManifold *manifold);                                             // Integrates physics collisions impulses to solve collisions
         void IntegratePhysicsVelocity(MPhysacBody *body);                                                     // Integrates physics velocity into position and forces
         void CorrectPhysicsPositions(PhysicsManifold *manifold);                                              // Corrects physics bodies positions based on manifolds collision information
-        Vector2 GetSupport(const MPhysacShape &shape, Vector2 dir);
+        Vector2f GetSupport(const MPhysacShape &shape, const Vector2f &dir);
         float FindAxisLeastPenetration(int *faceIndex, const MPhysacShape &shapeA, const MPhysacShape &shapeB);            // Finds polygon shapes axis least penetration
-        void FindIncidentFace(Vector2 *v0, Vector2 *v1, const MPhysacShape &ref, const MPhysacShape &inc, int index);      // Finds two polygon shapes incident face
-        int Clip(Vector2 normal, float clip, Vector2 *faceA, Vector2 *faceB);                                // Calculates clipping based on a normal and two faces
+        void FindIncidentFace(Vector2f *v0, Vector2f *v1, const MPhysacShape &ref, const MPhysacShape &inc, int index);      // Finds two polygon shapes incident face
+        int Clip(const Vector2f &normal, float clip, Vector2f *faceA, Vector2f *faceB);                                // Calculates clipping based on a normal and two faces
         bool BiasGreaterThan(float valueA, float valueB);                                                    // Check if values are between bias range
-        Vector2 TriangleBarycenter(Vector2 v1, Vector2 v2, Vector2 v3);                                      // Returns the barycenter of a triangle given by 3 points
+        Vector2f TriangleBarycenter(const Vector2f &v1, const Vector2f &v2, const Vector2f &v3);                                      // Returns the barycenter of a triangle given by 3 points
 
         void InitTimer(void);                                                                                // Initializes hi-resolution MONOTONIC timer
         unsigned long long int GetTimeCount(void);                                                           // Get hi-res MONOTONIC time measure in mseconds

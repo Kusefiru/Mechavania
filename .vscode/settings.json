@@ -1,17 +1,7 @@
 {
-	"files.exclude": {
-		"**/.git": true,
-		"**/.svn": true,
-		"**/.hg": true,
-		"**/CVS": true,
-		"**/.DS_Store": true,
-		"**/*.o": true,
-		"**/*.exe": true,
-	},
-	"cmake.configureOnOpen": false,
-	"C_Cpp.errorSquiggles": "Disabled",
-	"files.associations": {
-		"limits": "cpp",
-		"thread": "cpp"
-	}
+    "cmake.configureSettings": {
+        "CMAKE_TOOLCHAIN_FILE": "${env:VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
+    },
+    "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+    "cmake.configureOnOpen": true
 }

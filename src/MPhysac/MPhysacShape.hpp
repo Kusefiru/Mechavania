@@ -17,10 +17,10 @@ class MPhysacBody;
 //---------------------------------------------------------------------------------
 class PolygonData {
     public:
-        std::vector<Vector2> positions;     // Polygon vertex positions vectors
-        std::vector<Vector2> normals;       // Polygon vertex normals vectors
+        std::vector<Vector2f> positions;     // Polygon vertex positions vectors
+        std::vector<Vector2f> normals;       // Polygon vertex normals vectors
 
-        void CreateRectanglePolygon(Vector2 pos, Vector2 size);
+        void CreateRectanglePolygon(const Vector2f &pos, const Vector2f &size);
         void CreateRandomPolygon(float radius, int sides);
 
         PolygonData(){};

@@ -18,7 +18,7 @@ class PlayerEntity : public Entity
         int getOxygenLevel(){return oxygenLevel;}
         void setOxygenLevel(int newVal){oxygenLevel = newVal;}
 
-        PlayerEntity(Vector2 pos, int width, int height, int density, std::string textureName);
+        PlayerEntity(const Vector2f &pos, int width, int height, int density, const std::string &textureName);
 
     private:
         int lifePoints;
