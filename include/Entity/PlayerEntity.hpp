@@ -10,8 +10,7 @@
 
 #include "Entity.hpp"
 
-class PlayerEntity : public Entity
-{
+class PlayerEntity : public Entity {
     public:
         int getLifePoints(){return lifePoints;}
         void setLifePoints(int newVal){lifePoints = newVal;}

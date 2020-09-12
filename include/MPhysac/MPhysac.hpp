@@ -98,6 +98,8 @@
 *
 ************************************************************************************/
 
+#include "Utils/Vector.hpp"            // Required for: Vector2Add(), Vector2Subtract()
+
 extern "C" {
 #ifndef PHYSAC_NO_THREADS
     #include <pthread.h>            // Required for: pthread_t, pthread_create()
@@ -108,11 +110,8 @@ extern "C" {
     #include <stdio.h>              // Required for: printf()
     #define TRACELOG(...) printf(__VA_ARGS__)
 #else
-    #define TRACELOG(...) (void)0
+    #define TRACELOG(...) ()0
 #endif
-
-#include "Utils/Vector.hpp"            // Required for: Vector2Add(), Vector2Subtract()
-
 
 // Time management functionality
 #include <time.h>                   // Required for: time(), clock_gettime()
@@ -147,7 +146,7 @@ extern "C" {
 #define PHYSAC_PENETRATION_ALLOWANCE    0.05f
 #define PHYSAC_PENETRATION_CORRECTION   0.4f
 
-#define PHYSAC_PI                       3.14159265358979323846
+#define PHYSAC_PI                       3.14159265358979323846f
 #define PHYSAC_DEG2RAD                  (PHYSAC_PI/180.0f)
 
 #define physacmin(a,b)      (((a)<(b))?(a):(b))
@@ -181,17 +180,17 @@ enum MPhysacSolidType { MPHYSAC_GROUND, MPHYSAC_PASSABLE, MPHYSAC_NONPASSABLE };
 class MPhysac {
     public:
         // Math functions
-        static Vector2f MathCross(float value, Vector2f vector);                                                      // Returns the cross product of a vector and a value
-        static float MathCrossVector2(Vector2f v1, Vector2f v2);                                                      // Returns the cross product of two vectors
-        static float MathLenSqr(Vector2f vector);                                                                    // Returns the len square root of a vector
-        static float MathDot(Vector2f v1, Vector2f v2);                                                               // Returns the dot product of two vectors
-        static float DistSqr(Vector2f v1, Vector2f v2);                                                               // Returns the square root of distance between two vectors
+        static Vector2f MathCross(float value, const Vector2f& vector);                                                      // Returns the cross product of a vector and a value
+        static float MathCrossVector2(const Vector2f& v1, const Vector2f& v2);                                                      // Returns the cross product of two vectors
+        static float MathLenSqr(const Vector2f& vector);                                                                    // Returns the len square root of a vector
+        static float MathDot(const Vector2f& v1, const Vector2f& v2);                                                               // Returns the dot product of two vectors
+        static float DistSqr(const Vector2f& v1, const Vector2f& v2);                                                               // Returns the square root of distance between two vectors
         static void MathNormalize(Vector2f *vector);                                                                 // Returns the normalized values of a vector
 
         static Matrix2x2 Mat2Radians(float radians);                                                                 // Creates a matrix 2x2 from a given radians value
         static void Mat2Set(Matrix2x2 *matrix, float radians);                                                       // Set values from radians to a created matrix 2x2
-        static Matrix2x2 Mat2Transpose(Matrix2x2 matrix);                                                            // Returns the transpose of a given matrix 2x2
-        static Vector2f Mat2MultiplyVector2(Matrix2x2 matrix, Vector2f vector);                                        // Multiplies a vector by a matrix 2x2
+        static Matrix2x2 Mat2Transpose(const Matrix2x2& matrix);                                                            // Returns the transpose of a given matrix 2x2
+        static Vector2f Mat2MultiplyVector2(const Matrix2x2& matrix, const Vector2f& vector);                                        // Multiplies a vector by a matrix 2x2
 };
 
 #endif

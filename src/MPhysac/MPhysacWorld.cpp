@@ -5,13 +5,13 @@
 *
 ********************************************************************************************/
 
-#include "MPhysacWorld.hpp"
+#include "MPhysac/MPhysacWorld.hpp"
 
 //----------------------------------------------------------------------------------
 // Module Functions Definition
 //----------------------------------------------------------------------------------
 // Initializes physics values, pointers and creates physics loop thread
-void MPhysacWorld::InitPhysics(void) {
+void MPhysacWorld::InitPhysics() {
     #ifndef PHYSAC_NO_THREADS
         // NOTE: if defined, user will need to create a thread for PhysicsThread function manually
         // Create physics thread using POSIXS thread libraries
@@ -31,7 +31,7 @@ void MPhysacWorld::InitPhysics(void) {
 }
 
 // Returns true if physics thread is currently enabled
-bool MPhysacWorld::IsPhysicsEnabled(void) {
+bool MPhysacWorld::IsPhysicsEnabled() {
     return physicsThreadEnabled;
 }
 
@@ -42,7 +42,7 @@ void MPhysacWorld::SetPhysicsGravity(float x, float y) {
 }
 
 // Creates a new rectangle physics body with generic parameters
-MPhysacBody* MPhysacWorld::CreatePhysicsBodyRectangle(const Vector2f &pos, float width, float height, float density) {
+MPhysacBody* MPhysacWorld::CreatePhysicsBodyRectangle(const Vector2f& pos, float width, float height, float density) {
     MPhysacBody* newBody = new MPhysacBody(pos, MPHYSAC_BOX, Vector2f(width, height), density);
 
     // Add new body to bodies pointers array and update bodies count
@@ -52,15 +52,15 @@ MPhysacBody* MPhysacWorld::CreatePhysicsBodyRectangle(const Vector2f &pos, float
 }
 
 // Creates a new circle physics body with generic parameters
-MPhysacBody* MPhysacWorld::CreatePhysicsBodyCircle(const Vector2f &pos, float radius, float density)
+MPhysacBody* MPhysacWorld::CreatePhysicsBodyCircle(const Vector2f& pos, float radius, float density)
 {
     return CreatePhysicsBodyPolygon(pos, radius, PHYSAC_CIRCLE_VERTICES, density);
 }
 
 // Creates a new polygon physics body with generic parameters
-MPhysacBody* MPhysacWorld::CreatePhysicsBodyPolygon(const Vector2f &pos, float radius, int sides, float density)
+MPhysacBody* MPhysacWorld::CreatePhysicsBodyPolygon(const Vector2f& pos, float radius, int sides, float density)
 {
-    MPhysacBody* newBody = new MPhysacBody(pos, MPHYSAC_POLYGON, Vector2f(radius, sides), density);
+    MPhysacBody* newBody = new MPhysacBody(pos, MPHYSAC_POLYGON, Vector2f(radius, (float)sides), density);
 
     // Add new body to bodies pointers array and update bodies count
     bodies.push_back(newBody);
@@ -69,12 +69,12 @@ MPhysacBody* MPhysacWorld::CreatePhysicsBodyPolygon(const Vector2f &pos, float r
 }
 
 // Returns the number of bodies registered in the MPhysacWorld
-int MPhysacWorld::GetMPhysacBodiesCount() {
+size_t MPhysacWorld::GetMPhysacBodiesCount() {
     return bodies.size();
 }
 
 // Returns the number of bodies registered in the MPhysacWorld
-int MPhysacWorld::GetManifoldsCount() {
+size_t MPhysacWorld::GetManifoldsCount() {
     return contacts.size();
 }
 
@@ -85,7 +85,7 @@ MPhysacBody* MPhysacWorld::GetMPhysacBody(int index)
 }
 
 // Remove MPhysacBody from bodies list then destroys it 
-void MPhysacWorld::DestroyMPhysacBody(MPhysacBody *body) {
+void MPhysacWorld::DestroyMPhysacBody(MPhysacBody* body) {
     for (int i = 0; i < bodies.size(); i++) {
         if (bodies.at(i) == body) {
             bodies.at(i) = bodies.back();
@@ -98,7 +98,7 @@ void MPhysacWorld::DestroyMPhysacBody(MPhysacBody *body) {
 }
 
 // Destroys created physics bodies and manifolds and resets global values
-void MPhysacWorld::ResetPhysics(void) {
+void MPhysacWorld::ResetPhysics() {
     // Delete all MPhysacBodies and empty the list
     while(bodies.size() > 0) {
         delete bodies.back();
@@ -113,7 +113,7 @@ void MPhysacWorld::ResetPhysics(void) {
 }
 
 // Unitializes physics pointers and exits physics loop thread
-void MPhysacWorld::ClosePhysics(void) {
+void MPhysacWorld::ClosePhysics() {
     // Exit physics loop thread
     physicsThreadEnabled = false;
 
@@ -135,7 +135,7 @@ void MPhysacWorld::ClosePhysics(void) {
 // Module Internal Functions Definition
 //----------------------------------------------------------------------------------
 // Physics loop thread function
-void *MPhysacWorld::PhysicsLoop(void *arg) {
+void *MPhysacWorld::PhysicsLoop(void* arg) {
 #ifndef PHYSAC_NO_THREADS
     #ifdef PHYSAC_DEBUG
         TRACELOG("[PHYSAC] physics thread created successfully\n");
@@ -155,26 +155,25 @@ void *MPhysacWorld::PhysicsLoop(void *arg) {
 }
 
 // Physics steps calculations (dynamics, collisions and position corrections)
-void MPhysacWorld::PhysicsStep(void) {
+void MPhysacWorld::PhysicsStep() {
     // Update current steps count
     stepsCount++;
     
     // Clear previous generated collisions information
-    for (int i = contacts.size() - 1; i >= 0; i--)
-    {
+    for (size_t i = contacts.size() - 1; i >= 0; i--) {
         DestroyPhysicsManifold(contacts.at(i));
     }
     
     // Reset physics bodies grounded state
-    for (int i = 0; i < bodies.size(); i++) {
+    for (size_t i = 0; i < bodies.size(); i++) {
         bodies.at(i)->isGrounded = false;
     }
     
     // Generate new collision information
-    for (int i = 0; i < bodies.size(); i++) {
+    for (size_t i = 0; i < bodies.size(); i++) {
         MPhysacBody *bodyA = bodies.at(i);
 
-        for (int j = i + 1; j < bodies.size(); j++) {
+        for (size_t j = i + 1; j < bodies.size(); j++) {
             MPhysacBody *bodyB = bodies.at(j);
 
             if ((bodyA->inverseMass == 0) && (bodyB->inverseMass == 0)) continue;
@@ -200,24 +199,24 @@ void MPhysacWorld::PhysicsStep(void) {
     }
     
     // Integrate forces to physics bodies
-    for (int i = 0; i < bodies.size(); i++)
+    for (size_t i = 0; i < bodies.size(); i++)
         IntegratePhysicsForces(bodies.at(i));
     
     // Initialize physics manifolds to solve collisions
-    for (int i = 0; i < contacts.size(); i++)
+    for (size_t i = 0; i < contacts.size(); i++)
         InitializePhysicsManifolds(contacts.at(i));
    
     // Integrate physics collisions impulses to solve collisions
-    for (int i = 0; i < PHYSAC_COLLISION_ITERATIONS; i++)
+    for (size_t i = 0; i < PHYSAC_COLLISION_ITERATIONS; i++)
         for (int j = 0; j < contacts.size(); j++)
             IntegratePhysicsImpulses(contacts.at(j));
         
     // Integrate velocity to physics bodies
-    for (int i = 0; i < bodies.size(); i++)
+    for (size_t i = 0; i < bodies.size(); i++)
         IntegratePhysicsVelocity(bodies.at(i));
     
     // Correct physics bodies positions based on manifolds collision information
-    for (int i = 0; i < contacts.size(); i++)
+    for (size_t i = 0; i < contacts.size(); i++)
         CorrectPhysicsPositions(contacts.at(i));
         
     // Clear physics bodies forces
@@ -228,7 +227,7 @@ void MPhysacWorld::PhysicsStep(void) {
 }
 
 // Wrapper to ensure PhysicsStep is run with at a fixed time step
-void MPhysacWorld::RunPhysicsStep(void) {
+void MPhysacWorld::RunPhysicsStep() {
     // Calculate current time
     currentTime = GetCurrentTime();
 
@@ -239,8 +238,7 @@ void MPhysacWorld::RunPhysicsStep(void) {
     accumulator += delta;
 
     // Fixed time stepping loop
-    while (accumulator >= deltaTime)
-    {
+    while (accumulator >= deltaTime) {
 #ifdef PHYSAC_DEBUG
         //TRACELOG("currentTime %f, startTime %f, accumulator-pre %f, accumulator-post %f, delta %f, deltaTime %f\n",
         //       currentTime, startTime, accumulator, accumulator-deltaTime, delta, deltaTime);
@@ -253,12 +251,12 @@ void MPhysacWorld::RunPhysicsStep(void) {
     startTime = currentTime;
 }
 
-void MPhysacWorld::SetPhysicsTimeStep(double delta) {
+void MPhysacWorld::SetPhysicsTimeStep(float delta) {
     deltaTime = delta;
 }
 
 // Creates a new physics manifold to solve collision
-PhysicsManifold* MPhysacWorld::CreatePhysicsManifold(MPhysacBody *a, MPhysacBody *b) {
+PhysicsManifold* MPhysacWorld::CreatePhysicsManifold(MPhysacBody* a, MPhysacBody* b) {
     PhysicsManifold *newManifold = new PhysicsManifold(a, b);
 
     // Add new body to bodies pointers array and update bodies count
@@ -268,8 +266,8 @@ PhysicsManifold* MPhysacWorld::CreatePhysicsManifold(MPhysacBody *a, MPhysacBody
 }
 
 // Unitializes and destroys a physics manifold
-void MPhysacWorld::DestroyPhysicsManifold(PhysicsManifold *manifold) {
-    for (int i = 0; i < contacts.size(); i++) {
+void MPhysacWorld::DestroyPhysicsManifold(PhysicsManifold* manifold) {
+    for (size_t i = 0; i < contacts.size(); i++) {
         if (contacts.at(i) == manifold) {
             contacts.at(i) = contacts.back();
             contacts.pop_back();
@@ -281,7 +279,7 @@ void MPhysacWorld::DestroyPhysicsManifold(PhysicsManifold *manifold) {
 }
 
 // Solves a created physics manifold between two physics bodies
-void MPhysacWorld::SolvePhysicsManifold(PhysicsManifold *manifold) {
+void MPhysacWorld::SolvePhysicsManifold(PhysicsManifold* manifold) {
     switch (manifold->bodyA->shape.type) {
         case MPHYSAC_CIRCLE: {
             switch (manifold->bodyB->shape.type) {
@@ -308,7 +306,7 @@ void MPhysacWorld::SolvePhysicsManifold(PhysicsManifold *manifold) {
 }
 
 // Solves collision between two circle shape physics bodies
-void MPhysacWorld::SolveCircleToCircle(PhysicsManifold *manifold)
+void MPhysacWorld::SolveCircleToCircle(PhysicsManifold* manifold)
 {
     MPhysacBody *bodyA = manifold->bodyA;
     MPhysacBody *bodyB = manifold->bodyB;
@@ -345,7 +343,7 @@ void MPhysacWorld::SolveCircleToCircle(PhysicsManifold *manifold)
 }
 
 // Solves collision between a circle to a polygon shape physics bodies
-void MPhysacWorld::SolveCircleToPolygon(PhysicsManifold *manifold) {
+void MPhysacWorld::SolveCircleToPolygon(PhysicsManifold* manifold) {
     MPhysacBody *bodyA = manifold->bodyA;
     MPhysacBody *bodyB = manifold->bodyB;
 
@@ -429,7 +427,7 @@ void MPhysacWorld::SolveCircleToPolygon(PhysicsManifold *manifold) {
 }
 
 // Solves collision between a polygon to a circle shape physics bodies
-void MPhysacWorld::SolvePolygonToCircle(PhysicsManifold *manifold) {
+void MPhysacWorld::SolvePolygonToCircle(PhysicsManifold* manifold) {
     MPhysacBody *bodyA = manifold->bodyA;
     MPhysacBody *bodyB = manifold->bodyB;
 
@@ -444,7 +442,7 @@ void MPhysacWorld::SolvePolygonToCircle(PhysicsManifold *manifold) {
 }
 
 // Solves collision between two polygons shape physics bodies
-void MPhysacWorld::SolvePolygonToPolygon(PhysicsManifold *manifold) {
+void MPhysacWorld::SolvePolygonToPolygon(PhysicsManifold* manifold) {
     if ((manifold->bodyA == nullptr) || (manifold->bodyB == nullptr)) return;
 
     MPhysacShape bodyA = manifold->bodyA->shape;
@@ -536,23 +534,22 @@ void MPhysacWorld::SolvePolygonToPolygon(PhysicsManifold *manifold) {
 }
 
 // Integrates physics forces into velocity
-void MPhysacWorld::IntegratePhysicsForces(MPhysacBody *body) {
+void MPhysacWorld::IntegratePhysicsForces(MPhysacBody* body) {
     if ((body->inverseMass == 0.0f) || !body->enabled) return;
 
-    body->velocity.x += (body->force.x*body->inverseMass)*(deltaTime/2.0);
-    body->velocity.y += (body->force.y*body->inverseMass)*(deltaTime/2.0);
+    body->velocity.x += (body->force.x*body->inverseMass)*(deltaTime/2.f);
+    body->velocity.y += (body->force.y*body->inverseMass)*(deltaTime/2.f);
 
     if (body->useGravity) {
-        body->velocity.x += gravityForce.x*(deltaTime/1000/2.0);
-        body->velocity.y += gravityForce.y*(deltaTime/1000/2.0);
+        body->velocity.x += gravityForce.x*(deltaTime/1000/2.f);
+        body->velocity.y += gravityForce.y*(deltaTime/1000/2.f);
     }
 
-    if (!body->freezeOrient) body->angularVelocity += body->torque*body->inverseInertia*(deltaTime/2.0);
+    if (!body->freezeOrient) body->angularVelocity += body->torque*body->inverseInertia*(deltaTime/2.f);
 }
 
 // Initializes physics manifolds to solve collisions
-void MPhysacWorld::InitializePhysicsManifolds(PhysicsManifold *manifold)
-{
+void MPhysacWorld::InitializePhysicsManifolds(PhysicsManifold* manifold) {
     MPhysacBody *bodyA = manifold->bodyA;
     MPhysacBody *bodyB = manifold->bodyB;
 
@@ -563,8 +560,7 @@ void MPhysacWorld::InitializePhysicsManifolds(PhysicsManifold *manifold)
     manifold->staticFriction = sqrtf(bodyA->staticFriction*bodyB->staticFriction);
     manifold->dynamicFriction = sqrtf(bodyA->dynamicFriction*bodyB->dynamicFriction);
 
-    for (int i = 0; i < manifold->contactsCount; i++)
-    {
+    for (size_t i = 0; i < manifold->contactsCount; i++) {
         // Caculate radius from center of mass to contact
         Vector2f radiusA = manifold->contacts[i] - bodyA->position;
         Vector2f radiusB = manifold->contacts[i] - bodyB->position;
@@ -583,7 +579,7 @@ void MPhysacWorld::InitializePhysicsManifolds(PhysicsManifold *manifold)
 }
 
 // Integrates physics collisions impulses to solve collisions
-void MPhysacWorld::IntegratePhysicsImpulses(PhysicsManifold *manifold) {
+void MPhysacWorld::IntegratePhysicsImpulses(PhysicsManifold* manifold) {
     MPhysacBody *bodyA = manifold->bodyA;
     MPhysacBody *bodyB = manifold->bodyB;
 
@@ -596,7 +592,7 @@ void MPhysacWorld::IntegratePhysicsImpulses(PhysicsManifold *manifold) {
         return;
     }
     
-    for (int i = 0; i < manifold->contactsCount; i++) {
+    for (size_t i = 0; i < manifold->contactsCount; i++) {
         // Calculate radius from center of mass to contact
         Vector2f radiusA = manifold->contacts[i] - bodyA->position;
         Vector2f radiusB = manifold->contacts[i] - bodyB->position;
@@ -649,7 +645,7 @@ void MPhysacWorld::IntegratePhysicsImpulses(PhysicsManifold *manifold) {
         impulseTangent /= inverseMassSum;
         impulseTangent /= (float)manifold->contactsCount;
 
-        float absImpulseTangent = fabs(impulseTangent);
+        float absImpulseTangent = (float)fabs(impulseTangent);
 
         // Don't apply tiny friction impulses
         if (absImpulseTangent <= PHYSAC_EPSILON) return;
@@ -677,7 +673,7 @@ void MPhysacWorld::IntegratePhysicsImpulses(PhysicsManifold *manifold) {
 }
 
 // Integrates physics velocity into position and forces
-void MPhysacWorld::IntegratePhysicsVelocity(MPhysacBody *body) {
+void MPhysacWorld::IntegratePhysicsVelocity(MPhysacBody* body) {
     if (!body->enabled) return;
 
     body->position.x += body->velocity.x*deltaTime;
@@ -690,7 +686,7 @@ void MPhysacWorld::IntegratePhysicsVelocity(MPhysacBody *body) {
 }
 
 // Corrects physics bodies positions based on manifolds collision information
-void MPhysacWorld::CorrectPhysicsPositions(PhysicsManifold *manifold) {
+void MPhysacWorld::CorrectPhysicsPositions(PhysicsManifold* manifold) {
     MPhysacBody *bodyA = manifold->bodyA;
     MPhysacBody *bodyB = manifold->bodyB;
 
@@ -712,12 +708,12 @@ void MPhysacWorld::CorrectPhysicsPositions(PhysicsManifold *manifold) {
 }
 
 // Returns the extreme point along a direction within a polygon
-Vector2f MPhysacWorld::GetSupport(const MPhysacShape &shape, const Vector2f &dir) {
+Vector2f MPhysacWorld::GetSupport(const MPhysacShape& shape, const Vector2f& dir) {
     float bestProjection = -PHYSAC_FLT_MAX;
     Vector2f bestVertex;
     PolygonData data = shape.vertexData;
 
-    for (int i = 0; i < data.positions.size(); i++) {
+    for (size_t i = 0; i < data.positions.size(); i++) {
         Vector2f vertex = data.positions[i];
         float projection = MPhysac::MathDot(vertex, dir);
 
@@ -731,14 +727,14 @@ Vector2f MPhysacWorld::GetSupport(const MPhysacShape &shape, const Vector2f &dir
 }
 
 // Finds polygon shapes axis least penetration
-float MPhysacWorld::FindAxisLeastPenetration(int *faceIndex, const MPhysacShape &shapeA, const MPhysacShape &shapeB) {
+float MPhysacWorld::FindAxisLeastPenetration(int* faceIndex, const MPhysacShape& shapeA, const MPhysacShape& shapeB) {
     float bestDistance = -PHYSAC_FLT_MAX;
     int bestIndex = 0;
 
     PolygonData dataA = shapeA.vertexData;
     //PolygonData dataB = shapeB.vertexData;
 
-    for (int i = 0; i < dataA.positions.size(); i++) {
+    for (size_t i = 0; i < dataA.positions.size(); i++) {
         // Retrieve a face normal from A shape
         Vector2f normal = dataA.normals[i];
         Vector2f transNormal = MPhysac::Mat2MultiplyVector2(shapeA.transform, normal);
@@ -763,7 +759,7 @@ float MPhysacWorld::FindAxisLeastPenetration(int *faceIndex, const MPhysacShape 
         // Store greatest distance
         if (distance > bestDistance) {
             bestDistance = distance;
-            bestIndex = i;
+            bestIndex = (int)i;
         }
     }
 
@@ -772,7 +768,7 @@ float MPhysacWorld::FindAxisLeastPenetration(int *faceIndex, const MPhysacShape 
 }
 
 // Finds two polygon shapes incident face
-void MPhysacWorld::FindIncidentFace(Vector2f *v0, Vector2f *v1, const MPhysacShape &ref, const MPhysacShape &inc, int index) {
+void MPhysacWorld::FindIncidentFace(Vector2f* v0, Vector2f* v1, const MPhysacShape& ref, const MPhysacShape& inc, int index) {
     PolygonData refData = ref.vertexData;
     PolygonData incData = inc.vertexData;
 
@@ -786,12 +782,12 @@ void MPhysacWorld::FindIncidentFace(Vector2f *v0, Vector2f *v1, const MPhysacSha
     int incidentFace = 0;
     float minDot = PHYSAC_FLT_MAX;
 
-    for (int i = 0; i < incData.positions.size(); i++) {
+    for (size_t i = 0; i < incData.positions.size(); i++) {
         float dot = MPhysac::MathDot(referenceNormal, incData.normals[i]);
 
         if (dot < minDot) {
             minDot = dot;
-            incidentFace = i;
+            incidentFace = (int)i;
         }
     }
 
@@ -804,7 +800,7 @@ void MPhysacWorld::FindIncidentFace(Vector2f *v0, Vector2f *v1, const MPhysacSha
 }
 
 // Calculates clipping based on a normal and two faces
-int MPhysacWorld::Clip(const Vector2f &normal, float clip, Vector2f *faceA, Vector2f *faceB) {
+int MPhysacWorld::Clip(const Vector2f& normal, float clip, Vector2f* faceA, Vector2f* faceB) {
     int sp = 0;
     Vector2f out[2] = {*faceA, *faceB };
 
@@ -851,8 +847,9 @@ Vector2f MPhysacWorld::TriangleBarycenter(const Vector2f &v1, const Vector2f &v2
 }
 
 // Initializes hi-resolution MONOTONIC timer
-void MPhysacWorld::InitTimer(void) {
-    srand(time(NULL));              // Initialize random seed
+void MPhysacWorld::InitTimer() {
+    // srand((unsigned int)time(NULL));              // Initialize random seed
+    // ^ done in main.cpp
 
 #ifdef _WIN32
     QueryPerformanceFrequency((unsigned long long int *) &frequency);
@@ -869,13 +866,12 @@ void MPhysacWorld::InitTimer(void) {
     frequency = (timebase.denom*1e9)/timebase.numer;
 #endif
 
-    baseTime = GetTimeCount();      // Get MONOTONIC clock time offset
+    baseTime = (double)GetTimeCount();      // Get MONOTONIC clock time offset
     startTime = GetCurrentTime();   // Get current time
 }
 
 // Get hi-res MONOTONIC time measure in seconds
-unsigned long long int MPhysacWorld::GetTimeCount(void)
-{
+unsigned long long int MPhysacWorld::GetTimeCount() {
     unsigned long long int value = 0;
 
 #ifdef _WIN32
@@ -896,7 +892,6 @@ unsigned long long int MPhysacWorld::GetTimeCount(void)
 }
 
 // Get current time in milliseconds
-double MPhysacWorld::GetCurrentTime(void)
-{
+double MPhysacWorld::GetCurrentTime() {
     return (double)(GetTimeCount() - baseTime)/frequency*1000;
 }

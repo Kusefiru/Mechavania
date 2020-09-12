@@ -36,16 +36,16 @@ class MPhysacBody {
         MPhysacShape shape;                      // Physics body shape information (type, radius, vertices, normals)
         MPhysacSolidType solidType;
 
-        void PhysicsAddForce(const Vector2f &force);  // Add force to the MPhysacBody
+        void PhysicsAddForce(const Vector2f& force);  // Add force to the MPhysacBody
         void PhysicsAddTorque(float amount);          // Add torque to the MPhysacBody
         int GetMPhysacBodyShapeType();
-        int GetMPhysacBodyShapeVerticesCount();
+        size_t GetMPhysacBodyShapeVerticesCount();
         Vector2f GetMPhysacBodyShapeVertex(int vertex);
         void SetMPhysacBodyRotation(float radians);
 
     private:
         friend class MPhysacWorld;
-        MPhysacBody(const Vector2f &pos, MPhysacShapeType type, const Vector2f &dim, int density);
+        MPhysacBody(const Vector2f& pos, MPhysacShapeType type, const Vector2f& dim, float density);
         
 };
 

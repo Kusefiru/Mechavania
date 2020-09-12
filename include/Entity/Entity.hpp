@@ -8,10 +8,11 @@
 #ifndef MECHA_ENTITY_HPP
 #define MECHA_ENTITY_HPP
 
-#include "Libs.hpp"
+#include <string>
 
-class Entity 
-{
+#include "MPhysac/MPhysacBody.hpp"
+
+class Entity {
     public:
         MPhysacBody* body;
 
@@ -22,9 +23,9 @@ class Entity
         void spawn();
         void despawn();
 
-        void setTexture(std::string newTextureName);
+        void setTexture(const std::string &newTextureName);
 
-        Entity(const Vector2f &pos, int width, int height, int density, std::string textureName);
+        Entity(const Vector2f &pos, int width, int height, int density, const std::string &textureName);
         ~Entity();
 
     private:

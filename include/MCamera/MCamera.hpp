@@ -8,10 +8,9 @@
 #ifndef MECHA_CAMERA_HPP
 #define MECHA_CAMERA_HPP
 
-#include "Libs.hpp"
+#include "MPhysac/MPhysacBody.hpp"
 
-class MCamera
-{
+class MCamera {
     public:
         void update();
         void setFollowedPhysicsBody(MPhysacBody* body);

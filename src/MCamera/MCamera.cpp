@@ -5,7 +5,7 @@
 *
 ********************************************************************************************/
 
-#include "MCamera.hpp"
+#include "MCamera/MCamera.hpp"
 
 void MCamera::update() {
     // if(this->followedPhysicsBody != nullptr) {
@@ -15,7 +15,7 @@ void MCamera::update() {
     // }
 }
 
-void MCamera::setFollowedPhysicsBody(MPhysacBody* body){
+void MCamera::setFollowedPhysicsBody(MPhysacBody* body) {
     this->followedPhysicsBody = body;
     this->update();
 }
@@ -24,7 +24,7 @@ void MCamera::setFollowedPhysicsBody(MPhysacBody* body){
 //     return this->camera;
 // }
 
-MCamera::MCamera(){
+MCamera::MCamera() {
     // this->camera = {0};
     // this->camera.offset = (Vector2){ SCREEN_WIDTH/2, SCREEN_WIDTH/2 };
     // this->camera.target = (Vector2){ SCREEN_WIDTH/2, SCREEN_WIDTH/2 };

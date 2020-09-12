@@ -20,15 +20,15 @@ class PolygonData {
         std::vector<Vector2f> positions;     // Polygon vertex positions vectors
         std::vector<Vector2f> normals;       // Polygon vertex normals vectors
 
-        void CreateRectanglePolygon(const Vector2f &pos, const Vector2f &size);
+        void CreateRectanglePolygon(const Vector2f& pos, const Vector2f& size);
         void CreateRandomPolygon(float radius, int sides);
 
         PolygonData(){};
-        //PolygonData(Vector2 pos, Vector2 size);
-        //PolygonData(float radius, int size);
+        PolygonData(const Vector2f& pos, const Vector2f& size);
+        PolygonData(float radius, int size);
 
-        //static PolygonData CreateRectanglePolygon(Vector2 pos, Vector2 size);
-        //static PolygonData CreateRandomPolygon(float radius, int sides);
+        // static PolygonData CreateRectanglePolygon(const Vector2f &pos, const Vector2f &size);
+        // static PolygonData CreateRandomPolygon(float radius, int sides);
 };
 
 class MPhysacShape {

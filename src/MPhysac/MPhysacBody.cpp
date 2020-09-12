@@ -5,10 +5,10 @@
 *
 ********************************************************************************************/
 
-#include "MPhysacBody.hpp"
+#include "MPhysac/MPhysacBody.hpp"
 
 // Adds a force to a physics body
-void MPhysacBody::PhysicsAddForce(const Vector2f &addforce) {
+void MPhysacBody::PhysicsAddForce(const Vector2f& addforce) {
     force = force + addforce;
 }
 
@@ -23,7 +23,7 @@ int MPhysacBody::GetMPhysacBodyShapeType() {
 }
 
 // Returns the amount of vertices of a physics body shape
-int MPhysacBody::GetMPhysacBodyShapeVerticesCount() {
+size_t MPhysacBody::GetMPhysacBodyShapeVerticesCount() {
     return shape.vertexData.positions.size();
 }
 
@@ -40,7 +40,7 @@ void MPhysacBody::SetMPhysacBodyRotation(float radians) {
 }
 
 // Create a MPhysacBody
-MPhysacBody::MPhysacBody(const Vector2f &pos, MPhysacShapeType type, const Vector2f &dim, int density) :
+MPhysacBody::MPhysacBody(const Vector2f& pos, MPhysacShapeType type, const Vector2f& dim, float density) :
     enabled(true),
     position(pos),
     velocity(),
@@ -56,8 +56,8 @@ MPhysacBody::MPhysacBody(const Vector2f &pos, MPhysacShapeType type, const Vecto
 
     switch(type) {
         case MPHYSAC_BOX: shape.vertexData.CreateRectanglePolygon(pos, dim); break; // TODO : segfault here
-        case MPHYSAC_POLYGON: shape.vertexData.CreateRandomPolygon(dim.x, dim.y); break;
-        case MPHYSAC_CIRCLE: shape.vertexData.CreateRandomPolygon(dim.x, dim.y); break;
+        // case MPHYSAC_POLYGON: shape.vertexData.CreateRandomPolygon(dim.x, dim.y); break; Strange call to Random Polygon here
+        // case MPHYSAC_CIRCLE: shape.vertexData.CreateRandomPolygon(dim.x, dim.y); break;Strange call to Random Polygon here
         default: break;
     }
 

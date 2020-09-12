@@ -5,7 +5,9 @@
 *
 ********************************************************************************************/
 
-#include "Entity.hpp"
+#include <iostream>
+
+#include "Entity/Entity.hpp"
 
 bool Entity::getIsPassable(){
     return this->isPassable;
@@ -15,7 +17,7 @@ void Entity::setIsPassable(bool newIsPassable){
     this->isPassable = newIsPassable;
 }
 
-void Entity::setTexture(std::string newTextureName){
+void Entity::setTexture(const std::string &newTextureName){
     //this->textureName = newTextureName;
     // Update Texture
 }
@@ -32,16 +34,16 @@ void Entity::despawn(){
     isSpawned = false;
 }
 
-Entity::Entity(const Vector2f &pos, int width, int height, int density, std::string textureName){
+Entity::Entity(const Vector2f &pos, int width, int height, int density, const std::string &name){
     // Create the PhysicsBody associated with the Entity
-    this->body = glMPhysac->CreatePhysicsBodyRectangle(pos, width, height, density);
-    std::cout<<"yo"<<std::endl;
+    //body = glMPhysac->CreatePhysicsBodyRectangle(pos, width, height, density);
+    std::cout << "yo" << std::endl;
     // Set the Texture Name
-    this->textureName = textureName;
+    textureName = name;
     // Create the Texture
 }
 
 Entity::~Entity(){
     // Destroys this PhysicsBody
-    glMPhysac->DestroyMPhysacBody(this->body);
+    //glMPhysac->DestroyMPhysacBody(body);
 }
