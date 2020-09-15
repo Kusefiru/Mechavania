@@ -12,4 +12,7 @@ target_sources(${PROJECT_NAME}
 		Entity/PlayerEntity.cpp
 
 		MCamera/MCamera.cpp
+
+		ResourcesLoader.cpp
+		Sprite.cpp
 )

@@ -3,21 +3,34 @@
 #include <iostream>
 
 #include <SDL.h>
+#include <SDL2/SDL_image.h>
 
+#include "ResourcesLoader.hpp"
+#include "Sprite.hpp"
+#include "Painter.hpp"
 #include "MPhysac/MPhysacWorld.hpp"
 
 Game::Game() {
 	SDL_Init(SDL_INIT_EVERYTHING);
+	IMG_Init(IMG_INIT_PNG);
 
 	win = SDL_CreateWindow("Mechavania",
 		SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
 		SCREEN_WIDTH, SCREEN_HEIGHT, 0);
 	renderer = SDL_CreateRenderer(win, -1, 0);
+	painter = new Painter(renderer);
+	resources = new ResourcesLoader(renderer);
+	test = new Sprite(resources, Image::Player, 0, 0, 0, 0);
 }
 
 Game::~Game() {
+	delete test;
+	delete painter;
+	resources->unloadAll();
+	delete resources;
 	SDL_DestroyRenderer(renderer);
    	SDL_DestroyWindow(win);
+	IMG_Quit();
 	SDL_Quit();
 }
 
@@ -102,6 +115,7 @@ void Game::draw() {
 	SDL_RenderClear(renderer);
 
 	// Draw something
+	painter->draw(*test);
 
 	SDL_RenderPresent(renderer);
 }
