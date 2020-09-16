@@ -12,10 +12,10 @@
 class ResourcesLoader {
 	public:
 		ResourcesLoader(SDL_Renderer* renderer) : renderer(renderer) {}
+		virtual ~ResourcesLoader(); // unload all resources
 
 		void load(Image::ID id, const std::string &filename);
 		void unload(Image::ID id);
-		void unloadAll();
 
 		SDL_Texture* get(Image::ID id);
 		const SDL_Texture* get(Image::ID id) const;

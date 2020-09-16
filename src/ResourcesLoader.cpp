@@ -4,6 +4,11 @@
 #include <stdexcept>
 #include <cassert>
 
+ResourcesLoader::~ResourcesLoader() {
+	for(auto &kv : resourceMap)
+		SDL_DestroyTexture(kv.second);
+}
+
 void ResourcesLoader::load(Image::ID id, const std::string &filename) {
 	SDL_Texture* loaded(IMG_LoadTexture(renderer, filename.c_str()));
 	if (!loaded) // NULL ?
@@ -22,13 +27,6 @@ void ResourcesLoader::unload(Image::ID id) {
 	size_t nbErased = resourceMap.erase(id);
 	if (!nbErased)
 		std::cerr << "[Warning] ResourcesLoader::unload - nothing to unload for key " << id << std::endl;
-}
-
-void ResourcesLoader::unloadAll() {
-	for(auto &kv : resourceMap)
-		SDL_DestroyTexture(kv.second);
-
-	resourceMap.clear();
 }
 
 SDL_Texture* ResourcesLoader::get(Image::ID id) {

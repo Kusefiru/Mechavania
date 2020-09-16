@@ -13,6 +13,8 @@ target_sources(${PROJECT_NAME}
 
 		MCamera/MCamera.cpp
 
+		Window.cpp
+		Renderer.cpp
 		ResourcesLoader.cpp
 		Sprite.cpp
 )

@@ -3,16 +3,13 @@
 
 #include <stdint.h> // Or uint32_t is not defined => C3646
 
-#define SCREEN_WIDTH 1280
-#define SCREEN_HEIGHT 720
+#include "Window.hpp"
+#include "Renderer.hpp"
+#include "Painter.hpp"
+#include "ResourcesLoader.hpp"
+#include "Sprite.hpp"
 
 class MPhysacWorld;
-class ResourcesLoader;
-class Sprite;
-class Painter;
-
-struct SDL_Window;
-struct SDL_Renderer;
 
 class Game {
 	public:
@@ -29,15 +26,15 @@ class Game {
 	private:
 		MPhysacWorld *glMPhysac;
 
-		SDL_Window *win;
-		SDL_Renderer *renderer;
+		// Must be declared in this order (to have a correct destruction order)
+		Window win;
+		Renderer renderer;
+		Painter painter;
+		ResourcesLoader resources;
+		Sprite test;
 
 		bool running;
 		uint32_t fps;
-
-		Painter *painter;
-		ResourcesLoader *resources;
-		Sprite *test;
 
 };
 

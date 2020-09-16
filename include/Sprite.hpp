@@ -11,7 +11,7 @@ class ResourcesLoader;
 
 class Sprite : public Drawable {
 	public:
-		Sprite(ResourcesLoader *rl, Image::ID id, int x, int y, int w, int h);
+		Sprite(ResourcesLoader &rl, Image::ID id, int x, int y, int w, int h);
 		virtual ~Sprite();
 
 		void draw(const Painter& painter) const;
@@ -20,7 +20,7 @@ class Sprite : public Drawable {
 		SDL_Rect sourceRect;
 	
 	private:
-		ResourcesLoader *resources;
+		ResourcesLoader &resources;
 		Image::ID imgID;
 };
 

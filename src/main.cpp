@@ -11,10 +11,16 @@
 #include <ctime>
 
 #define SDL_MAIN_HANDLED
+#include <SDL.h>
+#include <SDL2/SDL_image.h>
+
 #include "Game.hpp"
 
 int main(int, char**) {
 	srand((unsigned int)time(NULL));
+
+	SDL_Init(SDL_INIT_EVERYTHING);
+	IMG_Init(IMG_INIT_PNG);
 
 	try {
 		Game game;
@@ -22,6 +28,9 @@ int main(int, char**) {
 	} catch(std::exception &e) {
 		std::cerr << "\n EXCEPTION: " << e.what() << std::endl;
 	}
+
+	IMG_Quit();
+	SDL_Quit();
 
 	return 0;
 }

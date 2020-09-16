@@ -5,34 +5,16 @@
 #include <SDL.h>
 #include <SDL2/SDL_image.h>
 
-#include "ResourcesLoader.hpp"
-#include "Sprite.hpp"
-#include "Painter.hpp"
 #include "MPhysac/MPhysacWorld.hpp"
 
-Game::Game() {
-	SDL_Init(SDL_INIT_EVERYTHING);
-	IMG_Init(IMG_INIT_PNG);
+Game::Game() :
+	win(),
+	renderer(win),
+	painter(renderer.r),
+	resources(renderer.r),
+	test(resources, Image::Player, 0, 0, 0, 0) {}
 
-	win = SDL_CreateWindow("Mechavania",
-		SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-		SCREEN_WIDTH, SCREEN_HEIGHT, 0);
-	renderer = SDL_CreateRenderer(win, -1, 0);
-	painter = new Painter(renderer);
-	resources = new ResourcesLoader(renderer);
-	test = new Sprite(resources, Image::Player, 0, 0, 0, 0);
-}
-
-Game::~Game() {
-	delete test;
-	delete painter;
-	resources->unloadAll();
-	delete resources;
-	SDL_DestroyRenderer(renderer);
-   	SDL_DestroyWindow(win);
-	IMG_Quit();
-	SDL_Quit();
-}
+Game::~Game() {}
 
 // Core of the game loop
 void Game::run() {
@@ -85,7 +67,7 @@ void Game::processInput() {
 	while (SDL_PollEvent(&ev)) {
 		switch(ev.type) {
 		case SDL_WINDOWEVENT:
-			if (ev.window.windowID == SDL_GetWindowID(win)) {
+			if (ev.window.windowID == SDL_GetWindowID(win.w)) {
 				switch (ev.window.event) {
 				case SDL_WINDOWEVENT_FOCUS_GAINED:
 					std::cout << "Gained Focus" << std::endl;
@@ -112,10 +94,10 @@ void Game::processInput() {
 }
 
 void Game::draw() {
-	SDL_RenderClear(renderer);
+	SDL_RenderClear(renderer.r);
 
 	// Draw something
-	painter->draw(*test);
+	painter.draw(test);
 
-	SDL_RenderPresent(renderer);
+	SDL_RenderPresent(renderer.r);
 }
