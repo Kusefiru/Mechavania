@@ -11,26 +11,29 @@
 #include <string>
 
 #include "MPhysac/MPhysacBody.hpp"
+#include "Utils/Vector.hpp"
 
 class Entity {
     public:
-        MPhysacBody* body;
+        bool getIsPassable(){return isPassable;};
 
-        bool getIsPassable();
-        void setIsPassable(bool newIsPassable);
+        bool getIsSpawned(){return isSpawned;};
 
-        bool getIsSpawned();
+        void setPosition(Vector2f newPos){position = newPos;}
+        Vector2f getPosition(){return position;}
+
         void spawn();
         void despawn();
 
-        void setTexture(const std::string &newTextureName);
-
-        Entity(const Vector2f &pos, int width, int height, int density, const std::string &textureName);
+        Entity();
         ~Entity();
 
+    protected:
+        bool isPassable;        // If the Entity is passable
+
     private:
-        bool isPassable;        // If the Entity is passable by the player / the ennemis
         bool isSpawned;         // If the Entity is spawned
+        Vector2f position;
         std::string textureName;
         //Texture2D texture;
 };

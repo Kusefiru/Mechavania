@@ -6,13 +6,14 @@
 #include <SDL2/SDL_image.h>
 
 #include "MPhysac/MPhysacWorld.hpp"
+#include "Entity/PlayerEntity.hpp"
 
 Game::Game() :
 	win(),
 	renderer(win),
 	painter(renderer.r),
 	resources(renderer.r),
-	test(resources, Image::Player, 0, 0, 0, 0) {}
+	testPlayer(resources) {}
 
 Game::~Game() {}
 
@@ -21,8 +22,11 @@ void Game::run() {
 	running = true;
 	fps = 60;
 
+	glMPhysac->InitPhysics();
+
 	while (running) {
 		const uint32_t startTime = SDL_GetTicks();
+		//glMPhysac->RunPhysicsStep();
 
 		processInput();
 		update();
@@ -83,6 +87,14 @@ void Game::processInput() {
 		case SDL_KEYDOWN:
 			if (ev.key.keysym.scancode == SDL_SCANCODE_ESCAPE)
 				running = false;
+			if (ev.key.keysym.scancode == SDL_SCANCODE_UP)
+				testPlayer.position -= Vector2f(0,5);
+			if (ev.key.keysym.scancode == SDL_SCANCODE_DOWN)
+				testPlayer.position += Vector2f(0,5);
+			if (ev.key.keysym.scancode == SDL_SCANCODE_RIGHT)
+				testPlayer.position += Vector2f(5,0);
+			if (ev.key.keysym.scancode == SDL_SCANCODE_LEFT)
+				testPlayer.position -= Vector2f(5,0);
 			break;
 		case SDL_QUIT:
 			running = false;
@@ -97,7 +109,8 @@ void Game::draw() {
 	SDL_RenderClear(renderer.r);
 
 	// Draw something
-	painter.draw(test);
+	painter.draw(testPlayer);
+
 
 	SDL_RenderPresent(renderer.r);
 }

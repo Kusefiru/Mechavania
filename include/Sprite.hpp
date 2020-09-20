@@ -9,12 +9,12 @@ struct SDL_Rect;
 struct SDL_Texture;
 class ResourcesLoader;
 
-class Sprite : public Drawable {
+class Sprite {
 	public:
 		Sprite(ResourcesLoader &rl, Image::ID id, int x, int y, int w, int h);
 		virtual ~Sprite();
 
-		void draw(const Painter& painter) const;
+		void Sprite::draw(const Painter& painter, int x, int y) const;
 
 	protected:
 		SDL_Rect sourceRect;

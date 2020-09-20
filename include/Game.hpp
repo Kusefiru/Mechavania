@@ -8,6 +8,7 @@
 #include "Painter.hpp"
 #include "ResourcesLoader.hpp"
 #include "Sprite.hpp"
+#include "Entity/PlayerEntity.hpp"
 
 class MPhysacWorld;
 
@@ -31,7 +32,7 @@ class Game {
 		Renderer renderer;
 		Painter painter;
 		ResourcesLoader resources;
-		Sprite test;
+		PlayerEntity testPlayer;
 
 		bool running;
 		uint32_t fps;

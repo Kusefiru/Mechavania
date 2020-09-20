@@ -9,6 +9,7 @@ target_sources(${PROJECT_NAME}
 		MPhysac/MPhysacWorld.cpp
 
 		Entity/Entity.cpp
+		Entity/MovableEntity.cpp
 		Entity/PlayerEntity.cpp
 
 		MCamera/MCamera.cpp

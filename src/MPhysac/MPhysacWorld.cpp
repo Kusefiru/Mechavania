@@ -12,18 +12,25 @@
 //----------------------------------------------------------------------------------
 // Initializes physics values, pointers and creates physics loop thread
 void MPhysacWorld::InitPhysics() {
+    printf("init physics");
+
     #ifndef PHYSAC_NO_THREADS
         // NOTE: if defined, user will need to create a thread for PhysicsThread function manually
         // Create physics thread using POSIXS thread libraries
+        printf("create threads")
         pthread_create(&physicsThreadId, NULL,(void *(*)(void *)) &PhysicsLoop, NULL);
+        printf("thread created")
     #endif
 
     // Initialize high resolution timer
+    printf("init physics2");
     InitTimer();
 
     #ifdef PHYSAC_DEBUG
         TRACELOG("[PHYSAC] physics module initialized successfully\n");
     #endif
+
+    printf("init physics3");
 
     accumulator = 0.0;
     bodies.reserve(PHYSAC_MAX_BODIES);
@@ -852,7 +859,9 @@ void MPhysacWorld::InitTimer() {
     // ^ done in main.cpp
 
 #ifdef _WIN32
+    printf("qpf");
     QueryPerformanceFrequency((unsigned long long int *) &frequency);
+    printf("qpf");
 #endif
 
 #if defined(__EMSCRIPTEN__) || defined(__linux__)

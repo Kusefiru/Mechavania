@@ -22,6 +22,9 @@ Sprite::~Sprite() {
 	resources.unload(imgID);
 }
 
-void Sprite::draw(const Painter& painter) const {
-	SDL_RenderCopy(painter.renderer, resources.get(imgID), NULL, NULL);
+void Sprite::draw(const Painter& painter, int x, int y) const {
+    SDL_Rect destRect;
+    destRect.w = sourceRect.w; destRect.h = sourceRect.h;
+    destRect.x = x; destRect.y = y;
+    SDL_RenderCopy(painter.renderer, resources.get(imgID), &sourceRect, &destRect);
 }
