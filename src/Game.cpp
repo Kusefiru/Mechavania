@@ -13,7 +13,9 @@ Game::Game() :
 	renderer(win),
 	painter(renderer.r),
 	resources(renderer.r),
-	testPlayer(resources) {}
+	statsdt(0),
+	testPlayer(resources)
+{}
 
 Game::~Game() {}
 
@@ -21,49 +23,48 @@ Game::~Game() {}
 void Game::run() {
 	running = true;
 	fps = 60;
+	std::chrono::duration<float> frameDuration(1.f / fps);
+	std::chrono::duration<float> sinceLastUpdate(0);
+	std::chrono::time_point<std::chrono::steady_clock> lastUpdate(std::chrono::steady_clock::now());
+	std::chrono::duration<float> dt(0);
 
-	glMPhysac->InitPhysics();
+	//glMPhysac->InitPhysics();
 
 	while (running) {
-		const uint32_t startTime = SDL_GetTicks();
-		//glMPhysac->RunPhysicsStep();
+		lastUpdate = std::chrono::steady_clock::now();
+		sinceLastUpdate += dt;
 
-		processInput();
-		update();
+		while (sinceLastUpdate > frameDuration) {
+			sinceLastUpdate -= frameDuration;
 		
+			processInput();
+			update(frameDuration);
+		}
+
+		updateStats(dt);
 		draw();
-		uint32_t elapsedTime = SDL_GetTicks() - startTime;
-		uint32_t timePerFrame = 1000 / fps; // (in ms)
-		if (elapsedTime < timePerFrame)
-			SDL_Delay(timePerFrame - elapsedTime); // Limit FPS (call sleep)
+		dt = std::chrono::steady_clock::now() - lastUpdate;
+		// if (elapsedTime < timePerFrame)
+		// 	SDL_Delay(timePerFrame - elapsedTime); // Limit FPS (call sleep)
 		// ...
 	}
 }
 
-/* Another way to update the main loop but no sleep (using 100% of cpu)
- * Here, Physic is update as much as possible and only rendering is limited to 60 FPS
- * dt: elapsed time between iterations :
+void Game::updateStats(const std::chrono::duration<float> &dt) {
+	statsdt += dt;
+	fpsStats++;
 
-void Game::run() {
-	running = true;
-
-	// Time (in ms) since last update
-	int sinceLastUpdate = 0;
-	int timePerFrame = 1000 / (int)fps; // (in ms)
-
-	while (running) {
-		const int dt = SDL_GetTicks();
-		while (sinceLastUpdate > timePerFrame) {
-			sinceLastUpdate -= timePerFrame;
-			processInput();
-			update(timePerFrame);
-		}
+	if (statsdt > std::chrono::duration<float>(1.f)) {
+		std::cout << "FPS: " << fpsStats << std::endl;
 		
-		draw();
+		statsdt -= std::chrono::duration<float>(1.f);
+		fpsStats = 0;
 	}
-} */
+}
 
-void Game::update() {}
+void Game::update(const std::chrono::duration<float> &dt) {
+	testPlayer.update(dt);
+}
 
 void Game::processInput() {
 	SDL_Event ev;
@@ -88,13 +89,13 @@ void Game::processInput() {
 			if (ev.key.keysym.scancode == SDL_SCANCODE_ESCAPE)
 				running = false;
 			if (ev.key.keysym.scancode == SDL_SCANCODE_UP)
-				testPlayer.position -= Vector2f(0,5);
+				testPlayer.move(-Vector2f(0,5));
 			if (ev.key.keysym.scancode == SDL_SCANCODE_DOWN)
-				testPlayer.position += Vector2f(0,5);
+				testPlayer.move(Vector2f(0,5));
 			if (ev.key.keysym.scancode == SDL_SCANCODE_RIGHT)
-				testPlayer.position += Vector2f(5,0);
+				testPlayer.move(Vector2f(5,0));
 			if (ev.key.keysym.scancode == SDL_SCANCODE_LEFT)
-				testPlayer.position -= Vector2f(5,0);
+				testPlayer.move(-Vector2f(5,0));
 			break;
 		case SDL_QUIT:
 			running = false;
@@ -110,7 +111,6 @@ void Game::draw() {
 
 	// Draw something
 	painter.draw(testPlayer);
-
 
 	SDL_RenderPresent(renderer.r);
 }

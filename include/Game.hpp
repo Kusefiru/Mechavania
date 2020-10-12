@@ -1,6 +1,7 @@
 #ifndef MECHA_GAME_HPP
 #define MECHA_GAME_HPP
 
+#include <chrono>
 #include <stdint.h> // Or uint32_t is not defined => C3646
 
 #include "Window.hpp"
@@ -20,9 +21,11 @@ class Game {
 		void run();
 
 	private:
-		void update();
+		void update(const std::chrono::duration<float> &dt);
 		void processInput();
 		void draw();
+
+		void updateStats(const std::chrono::duration<float> &dt);
 
 	private:
 		MPhysacWorld *glMPhysac;
@@ -32,6 +35,10 @@ class Game {
 		Renderer renderer;
 		Painter painter;
 		ResourcesLoader resources;
+
+		int fpsStats = 0;
+		std::chrono::duration<float> statsdt;
+		
 		PlayerEntity testPlayer;
 
 		bool running;

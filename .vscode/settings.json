@@ -3,6 +3,7 @@
         "CMAKE_TOOLCHAIN_FILE": "${env:VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
     },
     "cmake.configureOnOpen": true,
+    "configurationProvider": "ms-vscode.cmake-tools",
     "files.associations": {
         "*.tpp": "cpp",
         "algorithm": "cpp",
@@ -49,8 +50,20 @@
         "xtr1common": "cpp",
         "xtree": "cpp",
         "xutility": "cpp",
+<<<<<<< HEAD
+<<<<<<< HEAD
+        "chrono": "cpp",
         "ctime": "cpp",
         "locale": "cpp",
+        "ratio": "cpp",
+=======
+        "ctime": "cpp",
+        "locale": "cpp",
+>>>>>>> be84f3812004b6758eb5d30972c644b3f20888f6
+=======
+        "ctime": "cpp",
+        "locale": "cpp",
+>>>>>>> be84f3812004b6758eb5d30972c644b3f20888f6
         "xlocbuf": "cpp",
         "xlocmes": "cpp",
         "xlocmon": "cpp",

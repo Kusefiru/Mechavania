@@ -8,9 +8,11 @@
 #ifndef MECHA_PLAYERENTITY_HPP
 #define MECHA_PLAYERENTITY_HPP
 
+#include <chrono>
+
 #include "MovableEntity.hpp"
 #include "Drawable.hpp"
-#include "Sprite.hpp"
+#include "AnimatedSprite.hpp"
 #include "MPhysac/MPhysacBody.hpp"
 
 class PlayerEntity : public MovableEntity, public Drawable {
@@ -20,18 +22,22 @@ class PlayerEntity : public MovableEntity, public Drawable {
         int getOxygenLevel(){return oxygenLevel;}
         void setOxygenLevel(int newVal){oxygenLevel = newVal;}
 
+        void move(const Vector2f &newPos) { position += newPos; playerSprite->setPosition((Vector2i)position); }
+        void setPosition(const Vector2f &newPos) { position = newPos; playerSprite->setPosition((Vector2i)position); }
         void loadSprite(ResourcesLoader &rl);
-        void draw(const Painter& painter) const {playerSprite.draw(painter, int(position.x), int(position.y));}
+        void draw(const Painter& painter) const { playerSprite->draw(painter); }
+
+        void update(const std::chrono::duration<float> &dt) { playerSprite->update(dt); }
 
         PlayerEntity(ResourcesLoader& rl);
-        ~PlayerEntity(){};
+        ~PlayerEntity();
 
         Vector2f position;
 
     private:
         int lifePoints;
         int oxygenLevel;
-        Sprite playerSprite;
+        AnimatedSprite *playerSprite;
         MPhysacBody *playerBody;
 };
 

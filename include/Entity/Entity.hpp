@@ -19,7 +19,7 @@ class Entity {
 
         bool getIsSpawned(){return isSpawned;};
 
-        void setPosition(Vector2f newPos){position = newPos;}
+        void setPosition(const Vector2f &newPos){position = newPos;}
         Vector2f getPosition(){return position;}
 
         void spawn();
