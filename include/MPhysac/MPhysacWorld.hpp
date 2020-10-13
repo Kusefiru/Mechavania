@@ -8,6 +8,8 @@
 #ifndef MPHYSAC_WORLD_HPP
 #define MPHYSAC_WORLD_HPP
 
+#include <chrono>
+
 #include "MPhysacBody.hpp"
 
 class MPhysacWorld {
@@ -22,8 +24,8 @@ class MPhysacWorld {
         // Public Functions Declaration
         //----------------------------------------------------------------------------------
         void InitPhysics();                                                                                 // Initializes physics values, pointers and creates physics loop thread
-        void RunPhysicsStep();                                                                              // Run physics step, to be used if PHYSICS_NO_THREADS is set in your main loop
-        void SetPhysicsTimeStep(float delta);                                                               // Sets physics fixed time step in milliseconds. 1.666666 by default
+        void RunPhysicsStep(const std::chrono::duration<float>& dt);                                                                              // Run physics step, to be used if PHYSICS_NO_THREADS is set in your main loop
+        void SetPhysicsTimeStep(const std::chrono::duration<float>& delta);                                                               // Sets physics fixed time step in milliseconds. 1.666666 by default
         bool IsPhysicsEnabled();                                                                            // Returns true if physics thread is currently enabled
         void SetPhysicsGravity(float x, float y);                                                               // Sets physics global gravity force
         MPhysacBody* CreatePhysicsBodyCircle(const Vector2f& pos, float radius, float density);                 // Creates a new circle physics body with generic parameters
@@ -47,13 +49,9 @@ class MPhysacWorld {
         #endif
         unsigned int usedMemory = 0;                         // Total allocated dynamic memory
         bool physicsThreadEnabled = false;                   // Physics thread enabled state
-        double baseTime = 0.0;                               // Offset time for MONOTONIC clock
-        double startTime = 0.0;                              // Start time in milliseconds
-        float deltaTime = 1.f/60.f/10.f * 1000.f;              // Delta time used for physics steps, in milliseconds
-        double currentTime = 0.0;                            // Current time in milliseconds
-        unsigned long long int frequency = 0;                // Hi-res clock frequency
+        std::chrono::duration<float> deltaTime = std::chrono::milliseconds(1);              // Delta time used for physics steps, in milliseconds
 
-        double accumulator = 0.0;                            // Physics time step delta time accumulator
+        std::chrono::duration<float> accumulator = std::chrono::duration<float>::zero();                            // Physics time step delta time accumulator
         unsigned int stepsCount = 0;                         // Total physics steps processed
         Vector2f gravityForce = { 0.0f, 9.81f };              // Physics world gravity force
         std::vector<MPhysacBody*> bodies;                    // Physics bodies pointers array
@@ -83,10 +81,6 @@ class MPhysacWorld {
         int Clip(const Vector2f& normal, float clip, Vector2f* faceA, Vector2f* faceB);                                // Calculates clipping based on a normal and two faces
         bool BiasGreaterThan(float valueA, float valueB);                                                    // Check if values are between bias range
         Vector2f TriangleBarycenter(const Vector2f& v1, const Vector2f& v2, const Vector2f& v3);                                      // Returns the barycenter of a triangle given by 3 points
-
-        void InitTimer();                                                                                // Initializes hi-resolution MONOTONIC timer
-        unsigned long long int GetTimeCount();                                                           // Get hi-res MONOTONIC time measure in mseconds
-        double GetCurrentTime();                                                                         // Get current time measure in milliseconds
 
     public:
         MPhysacWorld(MPhysacWorld const&)        = delete;

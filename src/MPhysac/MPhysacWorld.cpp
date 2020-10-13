@@ -24,7 +24,6 @@ void MPhysacWorld::InitPhysics() {
 
     // Initialize high resolution timer
     printf("init physics2");
-    InitTimer();
 
     #ifdef PHYSAC_DEBUG
         TRACELOG("[PHYSAC] physics module initialized successfully\n");
@@ -32,7 +31,7 @@ void MPhysacWorld::InitPhysics() {
 
     printf("init physics3");
 
-    accumulator = 0.0;
+    accumulator = std::chrono::duration<float>::zero();
     bodies.reserve(PHYSAC_MAX_BODIES);
     contacts.reserve(PHYSAC_MAX_MANIFOLDS);
 }
@@ -234,15 +233,9 @@ void MPhysacWorld::PhysicsStep() {
 }
 
 // Wrapper to ensure PhysicsStep is run with at a fixed time step
-void MPhysacWorld::RunPhysicsStep() {
-    // Calculate current time
-    currentTime = GetCurrentTime();
-
-    // Calculate current delta time
-    const double delta = currentTime - startTime;
-
+void MPhysacWorld::RunPhysicsStep(const std::chrono::duration<float>& dt) {
     // Store the time elapsed since the last frame began
-    accumulator += delta;
+    accumulator += dt;
 
     // Fixed time stepping loop
     while (accumulator >= deltaTime) {
@@ -253,12 +246,9 @@ void MPhysacWorld::RunPhysicsStep() {
         PhysicsStep();
         accumulator -= deltaTime;
     }
-
-    // Record the starting of this frame
-    startTime = currentTime;
 }
 
-void MPhysacWorld::SetPhysicsTimeStep(float delta) {
+void MPhysacWorld::SetPhysicsTimeStep(const std::chrono::duration<float>& delta) {
     deltaTime = delta;
 }
 
@@ -544,21 +534,25 @@ void MPhysacWorld::SolvePolygonToPolygon(PhysicsManifold* manifold) {
 void MPhysacWorld::IntegratePhysicsForces(MPhysacBody* body) {
     if ((body->inverseMass == 0.0f) || !body->enabled) return;
 
-    body->velocity.x += (body->force.x*body->inverseMass)*(deltaTime/2.f);
-    body->velocity.y += (body->force.y*body->inverseMass)*(deltaTime/2.f);
+    const float dt = (float)std::chrono::duration_cast<std::chrono::milliseconds>(deltaTime).count();
+
+    body->velocity.x += (body->force.x*body->inverseMass)*(dt/2.f);
+    body->velocity.y += (body->force.y*body->inverseMass)*(dt/2.f);
 
     if (body->useGravity) {
-        body->velocity.x += gravityForce.x*(deltaTime/1000/2.f);
-        body->velocity.y += gravityForce.y*(deltaTime/1000/2.f);
+        body->velocity.x += gravityForce.x*(dt/1000/2.f);
+        body->velocity.y += gravityForce.y*(dt/1000/2.f);
     }
 
-    if (!body->freezeOrient) body->angularVelocity += body->torque*body->inverseInertia*(deltaTime/2.f);
+    if (!body->freezeOrient) body->angularVelocity += body->torque*body->inverseInertia*(dt/2.f);
 }
 
 // Initializes physics manifolds to solve collisions
 void MPhysacWorld::InitializePhysicsManifolds(PhysicsManifold* manifold) {
     MPhysacBody *bodyA = manifold->bodyA;
     MPhysacBody *bodyB = manifold->bodyB;
+
+    const float dt = (float)std::chrono::duration_cast<std::chrono::milliseconds>(deltaTime).count();
 
     if ((bodyA == nullptr) || (bodyB == nullptr)) return;
 
@@ -581,7 +575,7 @@ void MPhysacWorld::InitializePhysicsManifolds(PhysicsManifold* manifold) {
 
         // Determine if we should perform a resting collision or not;
         // The idea is if the only thing moving this object is gravity, then the collision should be performed without any restitution
-        if (MPhysac::MathLenSqr(radiusV) < (MPhysac::MathLenSqr(Vector2f(gravityForce.x*deltaTime/1000, gravityForce.y*deltaTime/1000)) + PHYSAC_EPSILON)) manifold->restitution = 0;
+        if (MPhysac::MathLenSqr(radiusV) < (MPhysac::MathLenSqr(Vector2f(gravityForce.x*dt/1000, gravityForce.y*dt/1000)) + PHYSAC_EPSILON)) manifold->restitution = 0;
     }
 }
 
@@ -683,10 +677,12 @@ void MPhysacWorld::IntegratePhysicsImpulses(PhysicsManifold* manifold) {
 void MPhysacWorld::IntegratePhysicsVelocity(MPhysacBody* body) {
     if (!body->enabled) return;
 
-    body->position.x += body->velocity.x*deltaTime;
-    body->position.y += body->velocity.y*deltaTime;
+    const float dt = (float)std::chrono::duration_cast<std::chrono::milliseconds>(deltaTime).count();
 
-    if (!body->freezeOrient) body->orient += body->angularVelocity*deltaTime;
+    body->position.x += body->velocity.x*dt;
+    body->position.y += body->velocity.y*dt;
+
+    if (!body->freezeOrient) body->orient += body->angularVelocity*dt;
     MPhysac::Mat2Set(&body->shape.transform, body->orient);
 
     IntegratePhysicsForces(body);
@@ -851,56 +847,4 @@ Vector2f MPhysacWorld::TriangleBarycenter(const Vector2f &v1, const Vector2f &v2
     result.y = (v1.y + v2.y + v3.y)/3;
 
     return result;
-}
-
-// Initializes hi-resolution MONOTONIC timer
-void MPhysacWorld::InitTimer() {
-    // srand((unsigned int)time(NULL));              // Initialize random seed
-    // ^ done in main.cpp
-
-#ifdef _WIN32
-    printf("qpf");
-    QueryPerformanceFrequency((unsigned long long int *) &frequency);
-    printf("qpf");
-#endif
-
-#if defined(__EMSCRIPTEN__) || defined(__linux__)
-    struct timespec now;
-    if (clock_gettime(CLOCK_MONOTONIC, &now) == 0) frequency = 1000000000;
-#endif
-
-#ifdef __APPLE__
-    mach_timebase_info_data_t timebase;
-    mach_timebase_info(&timebase);
-    frequency = (timebase.denom*1e9)/timebase.numer;
-#endif
-
-    baseTime = (double)GetTimeCount();      // Get MONOTONIC clock time offset
-    startTime = GetCurrentTime();   // Get current time
-}
-
-// Get hi-res MONOTONIC time measure in seconds
-unsigned long long int MPhysacWorld::GetTimeCount() {
-    unsigned long long int value = 0;
-
-#ifdef _WIN32
-    QueryPerformanceCounter((unsigned long long int *) &value);
-#endif
-
-#ifdef __linux__
-    struct timespec now;
-    clock_gettime(CLOCK_MONOTONIC, &now);
-    value = (unsigned long long int)now.tv_sec*(unsigned long long int)1000000000 + (unsigned long long int)now.tv_nsec;
-#endif
-
-#ifdef __APPLE__
-    value = mach_absolute_time();
-#endif
-
-    return value;
-}
-
-// Get current time in milliseconds
-double MPhysacWorld::GetCurrentTime() {
-    return (double)(GetTimeCount() - baseTime)/frequency*1000;
 }
