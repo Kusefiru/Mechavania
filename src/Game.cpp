@@ -28,7 +28,7 @@ void Game::run() {
 	std::chrono::time_point<std::chrono::steady_clock> lastUpdate(std::chrono::steady_clock::now());
 	std::chrono::duration<float> dt(0);
 
-	//glMPhysac->InitPhysics();
+	glMPhysac->InitPhysics();
 
 	while (running) {
 		lastUpdate = std::chrono::steady_clock::now();
@@ -39,6 +39,7 @@ void Game::run() {
 		
 			processInput();
 			update(frameDuration);
+			glMPhysac->RunPhysicsStep(frameDuration);
 		}
 
 		updateStats(dt);

@@ -166,7 +166,7 @@ void MPhysacWorld::PhysicsStep() {
     stepsCount++;
     
     // Clear previous generated collisions information
-    for (size_t i = contacts.size() - 1; i >= 0; i--) {
+    for (int i = contacts.size() - 1; i >= 0; i--) {
         DestroyPhysicsManifold(contacts.at(i));
     }
     

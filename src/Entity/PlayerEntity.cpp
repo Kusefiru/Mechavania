@@ -28,6 +28,7 @@ PlayerEntity::PlayerEntity(ResourcesLoader &rl) :
     MPhysacWorld &physacWorld = MPhysacWorld::getInstance();
     playerBody = physacWorld.CreatePhysicsBodyRectangle(position, 64.0, 64.0, 1.0);
     playerBody->solidType = MPHYSAC_NONPASSABLE;
+    playerBody->useGravity = true;
 
     std::cout<<"Creating player entity"<<std::endl;
 }

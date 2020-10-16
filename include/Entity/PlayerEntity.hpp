@@ -27,7 +27,7 @@ class PlayerEntity : public MovableEntity, public Drawable {
         void loadSprite(ResourcesLoader &rl);
         void draw(const Painter& painter) const { playerSprite->draw(painter); }
 
-        void update(const std::chrono::duration<float> &dt) { playerSprite->update(dt); }
+        void update(const std::chrono::duration<float> &dt) { playerSprite->update(dt); setPosition(playerBody->position); }
 
         PlayerEntity(ResourcesLoader& rl);
         ~PlayerEntity();
