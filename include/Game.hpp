@@ -9,10 +9,7 @@
 #include "Painter.hpp"
 #include "ResourcesLoader.hpp"
 #include "Sprite.hpp"
-#include "MPhysac/MPhysacWorld.hpp"
 #include "Entity/PlayerEntity.hpp"
-
-class MPhysacWorld;
 
 class Game {
 	public:
@@ -29,8 +26,6 @@ class Game {
 		void updateStats(const std::chrono::duration<float> &dt);
 
 	private:
-		MPhysacWorld *glMPhysac = &MPhysacWorld::getInstance();
-
 		// Must be declared in this order (to have a correct destruction order)
 		Window win;
 		Renderer renderer;

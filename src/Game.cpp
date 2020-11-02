@@ -5,7 +5,6 @@
 #include <SDL.h>
 #include <SDL2/SDL_image.h>
 
-#include "MPhysac/MPhysacWorld.hpp"
 #include "Entity/PlayerEntity.hpp"
 
 Game::Game() :
@@ -28,8 +27,6 @@ void Game::run() {
 	std::chrono::time_point<std::chrono::steady_clock> lastUpdate(std::chrono::steady_clock::now());
 	std::chrono::duration<float> dt(0);
 
-	glMPhysac->InitPhysics();
-
 	while (running) {
 		lastUpdate = std::chrono::steady_clock::now();
 		sinceLastUpdate += dt;
@@ -39,7 +36,7 @@ void Game::run() {
 		
 			processInput();
 			update(frameDuration);
-			glMPhysac->RunPhysicsStep(frameDuration);
+			testPlayer.processRealTimeEvents();
 		}
 
 		updateStats(dt);
@@ -89,14 +86,6 @@ void Game::processInput() {
 		case SDL_KEYDOWN:
 			if (ev.key.keysym.scancode == SDL_SCANCODE_ESCAPE)
 				running = false;
-			if (ev.key.keysym.scancode == SDL_SCANCODE_UP)
-				testPlayer.move(-Vector2f(0,5));
-			if (ev.key.keysym.scancode == SDL_SCANCODE_DOWN)
-				testPlayer.move(Vector2f(0,5));
-			if (ev.key.keysym.scancode == SDL_SCANCODE_RIGHT)
-				testPlayer.move(Vector2f(5,0));
-			if (ev.key.keysym.scancode == SDL_SCANCODE_LEFT)
-				testPlayer.move(-Vector2f(5,0));
 			break;
 		case SDL_QUIT:
 			running = false;
@@ -105,6 +94,7 @@ void Game::processInput() {
 			break;
 		}
 	}
+	testPlayer.processEvent(ev);
 }
 
 void Game::draw() {

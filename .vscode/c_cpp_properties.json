@@ -1,7 +1,7 @@
 {
     "configurations": [
         {
-            "name": "Basic",
+            "name": "CMake",
             "configurationProvider": "ms-vscode.cmake-tools",
             "cStandard": "c11",
             "cppStandard": "c++14"

@@ -13,9 +13,16 @@
 #include "MovableEntity.hpp"
 #include "Drawable.hpp"
 #include "AnimatedSprite.hpp"
-#include "MPhysac/MPhysacBody.hpp"
+#include "Input/InputTarget.hpp"
 
-class PlayerEntity : public MovableEntity, public Drawable {
+enum PlayerAction {
+    MoveUp,
+    MoveDown,
+    MoveLeft,
+    MoveRight,
+};
+
+class PlayerEntity : public Drawable, public InputTarget<PlayerAction> {
     public:
         int getLifePoints(){return lifePoints;}
         void setLifePoints(int newVal){lifePoints = newVal;}
@@ -27,7 +34,9 @@ class PlayerEntity : public MovableEntity, public Drawable {
         void loadSprite(ResourcesLoader &rl);
         void draw(const Painter& painter) const { playerSprite->draw(painter); }
 
-        void update(const std::chrono::duration<float> &dt) { playerSprite->update(dt); setPosition(playerBody->position); }
+        void update(const std::chrono::duration<float> &dt) { playerSprite->update(dt); }
+
+        void initInput();
 
         PlayerEntity(ResourcesLoader& rl);
         ~PlayerEntity();
@@ -38,7 +47,6 @@ class PlayerEntity : public MovableEntity, public Drawable {
         int lifePoints;
         int oxygenLevel;
         AnimatedSprite *playerSprite;
-        MPhysacBody *playerBody;
 };
 
 #endif

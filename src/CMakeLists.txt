@@ -19,4 +19,6 @@ target_sources(${PROJECT_NAME}
 		ResourcesLoader.cpp
 		Sprite.cpp
 		AnimatedSprite.cpp
+
+		Input/Action.cpp
 )

@@ -11,8 +11,7 @@
 #include "MPhysac/MPhysacBody.hpp"
 #include "MPhysac/MPhysacWorld.hpp"
 
-PlayerEntity::PlayerEntity(ResourcesLoader &rl) :
-    MovableEntity()
+PlayerEntity::PlayerEntity(ResourcesLoader &rl)
 {
     position += Vector2f(10,10);
 
@@ -25,14 +24,24 @@ PlayerEntity::PlayerEntity(ResourcesLoader &rl) :
 	playerSprite = new AnimatedSprite(rl, Image::Player, rects, std::chrono::duration<float>(0.1));
     playerSprite->setPosition((Vector2i)position);
 
-    MPhysacWorld &physacWorld = MPhysacWorld::getInstance();
-    playerBody = physacWorld.CreatePhysicsBodyRectangle(position, 64.0, 64.0, 1.0);
-    playerBody->solidType = MPHYSAC_NONPASSABLE;
-    playerBody->useGravity = true;
-
-    std::cout<<"Creating player entity"<<std::endl;
+	initInput();
 }
 
 PlayerEntity::~PlayerEntity() {
     delete playerSprite;
+}
+
+void PlayerEntity::initInput() {
+	bind(PlayerAction::MoveUp, Action(SDL_SCANCODE_UP, (Action::Type)(Action::Type::Pressed | Action::Type::RealTime)), [this]() {
+		move(Vector2f(0.f, -5.f));
+	});
+	bind(PlayerAction::MoveDown, Action(SDL_SCANCODE_DOWN, (Action::Type)(Action::Type::Pressed | Action::Type::RealTime)), [this]() {
+		move(Vector2f(0.f, 5.f));
+	});
+	bind(PlayerAction::MoveLeft, Action(SDL_SCANCODE_LEFT, (Action::Type)(Action::Type::Pressed | Action::Type::RealTime)), [this]() {
+		move(Vector2f(-5.f, 0.f));
+	});
+	bind(PlayerAction::MoveRight, Action(SDL_SCANCODE_RIGHT, (Action::Type)(Action::Type::Pressed | Action::Type::RealTime)), [this]() {
+		move(Vector2f(5.f, 0.f));
+	});
 }
