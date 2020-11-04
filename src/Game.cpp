@@ -12,8 +12,9 @@ Game::Game() :
 	renderer(win),
 	painter(renderer.r),
 	resources(renderer.r),
-	statsdt(0),
-	testPlayer(resources)
+	testPlayer(resources),
+	updateFrameDuration(1.f / 60.f),
+	renderFrameDuration(1.f / 144.f)
 {}
 
 Game::~Game() {}
@@ -21,42 +22,61 @@ Game::~Game() {}
 // Core of the game loop
 void Game::run() {
 	running = true;
-	fps = 60;
-	std::chrono::duration<float> frameDuration(1.f / fps);
-	std::chrono::duration<float> sinceLastUpdate(0);
-	std::chrono::time_point<std::chrono::steady_clock> lastUpdate(std::chrono::steady_clock::now());
+	std::chrono::duration<float> sinceLastUpdate(0.f), sinceLastRender(0.f);
+
+	std::chrono::time_point<std::chrono::steady_clock> lastUpdate(std::chrono::steady_clock::now()), lastRender(std::chrono::steady_clock::now());
 	std::chrono::duration<float> dt(0);
 
 	while (running) {
-		lastUpdate = std::chrono::steady_clock::now();
-		sinceLastUpdate += dt;
+		std::chrono::time_point<std::chrono::steady_clock> now = std::chrono::steady_clock::now();
+		dt = now - lastUpdate;
+		lastUpdate = now;
 
-		while (sinceLastUpdate > frameDuration) {
-			sinceLastUpdate -= frameDuration;
-		
+		sinceLastUpdate += dt;
+		sinceLastRender += dt;
+
+		while (sinceLastUpdate > updateFrameDuration) {
+			sinceLastUpdate -= updateFrameDuration;
+			
 			processInput();
-			update(frameDuration);
 			testPlayer.processRealTimeEvents();
+
+			update(updateFrameDuration);
+			updateStats(updateFrameDuration, std::chrono::seconds::zero());
 		}
 
-		updateStats(dt);
-		draw();
-		dt = std::chrono::steady_clock::now() - lastUpdate;
-		// if (elapsedTime < timePerFrame)
-		// 	SDL_Delay(timePerFrame - elapsedTime); // Limit FPS (call sleep)
-		// ...
+		if (sinceLastRender > renderFrameDuration) {
+			updateStats(std::chrono::seconds::zero(), sinceLastRender);
+			draw();
+			sinceLastRender = std::chrono::seconds::zero();
+		}
 	}
 }
 
-void Game::updateStats(const std::chrono::duration<float> &dt) {
-	statsdt += dt;
-	fpsStats++;
+void Game::updateStats(const std::chrono::duration<float> &dtU, const std::chrono::duration<float> &dtR) {
+	static std::chrono::duration<float> dtRender(0), dtUpdate(0); 
+	static int renderFps = 0, updateFps = 0;
+	
+	dtRender += dtR; dtUpdate += dtU;
 
-	if (statsdt > std::chrono::duration<float>(1.f)) {
-		std::cout << "FPS: " << fpsStats << std::endl;
+	if (dtR.count() != 0)
+		renderFps++;
+
+	if (dtU.count() != 0)
+		updateFps++;
+
+	if (dtRender > std::chrono::duration<float>(1.f)) {
+		std::cout << "FPS (Render): " << renderFps << std::endl;
 		
-		statsdt -= std::chrono::duration<float>(1.f);
-		fpsStats = 0;
+		dtRender -= std::chrono::duration<float>(1.f);
+		renderFps = 0;
+	}
+	
+	if (dtUpdate > std::chrono::duration<float>(1.f)) {
+		std::cout << "FPS (Update): " << updateFps << std::endl;
+		
+		dtUpdate -= std::chrono::duration<float>(1.f);
+		updateFps = 0;
 	}
 }
 

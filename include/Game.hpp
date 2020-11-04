@@ -21,9 +21,11 @@ class Game {
 	private:
 		void update(const std::chrono::duration<float> &dt);
 		void processInput();
+		void setUpdateFPS(unsigned int fps) { updateFrameDuration = std::chrono::duration<float>(1.f / (float)fps); }
+		void setRenderFPS(unsigned int fps) { renderFrameDuration = std::chrono::duration<float>(1.f / (float)fps); }
 		void draw();
 
-		void updateStats(const std::chrono::duration<float> &dt);
+		void updateStats(const std::chrono::duration<float> &dtU, const std::chrono::duration<float> &dtR);
 
 	private:
 		// Must be declared in this order (to have a correct destruction order)
@@ -32,14 +34,10 @@ class Game {
 		Painter painter;
 		ResourcesLoader resources;
 
-		int fpsStats = 0;
-		std::chrono::duration<float> statsdt;
-		
 		PlayerEntity testPlayer;
 
 		bool running;
-		uint32_t fps;
-
+		std::chrono::duration<float> updateFrameDuration, renderFrameDuration;
 };
 
 #endif

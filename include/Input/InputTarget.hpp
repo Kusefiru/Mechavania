@@ -8,7 +8,7 @@
 #include "Input/Action.hpp"
 
 /**
- * Input management inspired by https://github.com/Krozark/SFML-book/blob/master/05_GUI/include/SFML-Book/Action.hpp
+ * Input management inspired by https://github.com/Krozark/SFML-book/blob/master/05_GUI/include/SFML-Book/ActionTarget.hpp
  */
 
 template<typename ActionKey>

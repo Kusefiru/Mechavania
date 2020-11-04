@@ -58,7 +58,10 @@
         "xlocmes": "cpp",
         "xlocmon": "cpp",
         "xloctime": "cpp",
-        "unordered_map": "cpp"
+        "unordered_map": "cpp",
+        "functional": "cpp",
+        "list": "cpp",
+        "xhash": "cpp"
     },
     "C_Cpp.intelliSenseEngineFallback": "Disabled"
 }
